@@ -44,6 +44,8 @@ class Main extends Engine
 		if (mic.muted)
 			Security.showSettings(SecurityPanel.PRIVACY);
 
+		mic.setSilenceLevel(0);
+
 		mic.setLoopBack(true);
 		mic.addEventListener(ActivityEvent.ACTIVITY,
 		                     activityHandler);
