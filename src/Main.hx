@@ -3,6 +3,9 @@ import com.haxepunk.HXP;
 import flash.system.Security;
 import flash.system.SecurityPanel;
 import flash.media.Microphone;
+import flash.events.ActivityEvent;
+import flash.events.StatusEvent;
+import flash.events.SampleDataEvent;
 
 class Main extends Engine
 {
@@ -32,14 +35,22 @@ class Main extends Engine
 		HXP.screen.scale = 1;
 //		HXP.world = new YourWorld();
 
-		Security.showSettings(SecurityPanel.PRIVACY);
-
 		var mic = Microphone.getMicrophone();
 		trace(mic);
 
-		if (mic != null) {
-			mic.setLoopBack(true);
-		}
+		if (mic == null)
+			return;
+
+		if (mic.muted)
+			Security.showSettings(SecurityPanel.PRIVACY);
+
+		mic.setLoopBack(true);
+		mic.addEventListener(ActivityEvent.ACTIVITY,
+		                     activityHandler);
+		mic.addEventListener(StatusEvent.STATUS,
+		                     statusHandler);
+		mic.addEventListener(SampleDataEvent.SAMPLE_DATA,
+		                     sampleHandler);
 	}
 
 	public static function main()
@@ -47,4 +58,15 @@ class Main extends Engine
 		new Main();
 	}
 
+	public function activityHandler (ev) : Void {
+		trace("activity!");
+	}
+
+	public function statusHandler (ev) : Void {
+		trace("status!");
+	}
+
+	public function sampleHandler (ev) : Void {
+		trace(ev.data.readFloat());
+	}
 }
