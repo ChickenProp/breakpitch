@@ -33,26 +33,26 @@ class Main extends Engine
 #end
 		HXP.screen.color = kClearColor;
 		HXP.screen.scale = 1;
-//		HXP.world = new YourWorld();
 
-		var mic = Microphone.getMicrophone();
-		trace(mic);
 
-		if (mic == null)
+		G.init();
+
+		if (G.mic == null)
 			return;
 
-		if (mic.muted)
+		if (G.mic.muted)
 			Security.showSettings(SecurityPanel.PRIVACY);
 
-		mic.setSilenceLevel(0);
+		G.mic.setSilenceLevel(0);
 
-		mic.setLoopBack(true);
-		mic.addEventListener(ActivityEvent.ACTIVITY,
-		                     activityHandler);
-		mic.addEventListener(StatusEvent.STATUS,
-		                     statusHandler);
-		mic.addEventListener(SampleDataEvent.SAMPLE_DATA,
-		                     sampleHandler);
+		HXP.world = new FFTWorld();
+
+		//G.mic.addEventListener(ActivityEvent.ACTIVITY,
+		//                       activityHandler);
+		//G.mic.addEventListener(StatusEvent.STATUS,
+		//                       statusHandler);
+		//G.mic.addEventListener(SampleDataEvent.SAMPLE_DATA,
+		//                       sampleHandler);
 	}
 
 	public static function main()
@@ -61,14 +61,14 @@ class Main extends Engine
 	}
 
 	public function activityHandler (ev) : Void {
-		trace("activity!");
+		//trace("activity!");
 	}
 
 	public function statusHandler (ev) : Void {
-		trace("status!");
+		//trace("status!");
 	}
 
 	public function sampleHandler (ev) : Void {
-		trace(ev.data.readFloat());
+		//trace(ev.data.readFloat());
 	}
 }
