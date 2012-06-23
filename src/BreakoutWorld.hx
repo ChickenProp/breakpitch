@@ -8,9 +8,11 @@ class BreakoutWorld extends World {
 	public var left(getLeft, null):Float;
 	public var right(getRight, null):Float;
 	public var top(getTop, null):Float;
+	public var bottom(getBottom, null):Float;
 
 	override public function begin () : Void {
 		add(new Paddle());
+		add(new Ball());
 		width = 560;
 		height = 440;
 	}
@@ -27,4 +29,5 @@ class BreakoutWorld extends World {
 	function getLeft () : Float { return (HXP.width - width) / 2; }
 	function getRight () : Float { return (HXP.width + width) / 2; }
 	function getTop () : Float { return HXP.height - height; }
+	function getBottom () : Float { return HXP.height; }
 }

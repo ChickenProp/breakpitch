@@ -9,7 +9,7 @@ import nme.geom.Point;
 class PointOps 
 {
 
-	@op("+", true) public static function add(a:Point, b:Point):Point
+	@op("+") public static function add(a:Point, b:Point):Point
 	{
 		return new Point(a.x + b.x, a.y + b.y);
 	}
@@ -24,7 +24,7 @@ class PointOps
 		return new Point(a.x + b, a.y + b);
 	}
 	
-	@op("-", true) public static function sub(a:Point, b:Point):Point
+	@op("-") public static function sub(a:Point, b:Point):Point
 	{
 		return new Point(a.x - b.x, a.y - b.y);
 	}
@@ -58,5 +58,10 @@ class PointOps
 	{
 		return new Point(a.x * b, a.y * b);
 	}
-	
+
+	@op("*=", true) public static function imultScalarFloat(a:Point, b:Float) : Point {
+		a.x *= b;
+		a.y *= b;
+		return a;
+	}
 }
