@@ -47,6 +47,17 @@ class Ball extends Entity {
 			vel.y = Math.abs(vel.y);
 			bounceSize();
 		}
+		
+		var maxVY = 20;
+		var minVY = 5;
+		var maxVX = 10;
+		
+		var dx = if (vel.x < 0) -1 else 1;
+		var dy = if (vel.y < 0) -1 else 1;
+		
+		if (dx*vel.x > maxVX) vel.x = dx*maxVX;
+		if (dx*vel.y > maxVY) vel.y = dy*maxVY;
+		if (dy*vel.y < minVY) vel.y = dy*minVY;
 	}
 
 
@@ -81,10 +92,11 @@ class Ball extends Entity {
 	// ball keeps getting faster which is really bad.
 	public function hitPaddle(e:Entity) : Void {
 		var p = cast(e, Paddle);
+
 		var maxVY = 20;
 		var minVY = 5;
-		var maxVX = 20;
-
+		var maxVX = 8;
+		
 		var offx = (x - p.x)/p.halfWidth;
 		var newvelx = vel.x + p.vel * 0.2 + offx * 5;
 		var newvely = Math.sqrt(Math.max(vel.x*vel.x + vel.y*vel.y - newvelx*newvelx, 0));

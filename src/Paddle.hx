@@ -12,7 +12,7 @@ class Paddle extends Entity {
 
 		x = HXP.width / 2;
 		y = HXP.height - 50;
-		width = 100;
+		width = 150;
 		height = 10;
 		centerOrigin();
 		type = "solid";
@@ -25,10 +25,27 @@ class Paddle extends Entity {
 			- (if (Input.check(Key.LEFT)) 1 else 0);
 
 		vel += 3 * dx;
-		vel *= 0.9;
+		
+		var pitch = Pitch.getPitch();
+		
+		if (pitch > 20) {
+			if (pitch < 50) pitch = 50;
+			if (pitch > 90) pitch = 90;
+		
+			pitch -= 70;
+			
+			vel += pitch;
+		}
+		
+		var max = 20;
+		
+		if (vel < -max) vel = -max;
+		if (vel > max) vel = max;
+		
+		vel *= 0.8;
 		x += vel;
 
-		width = Std.int(100 + 0.02 * G.mic.activityLevel);
+		width = Std.int(150 + 0.5 * G.mic.activityLevel);
 
 		var left = 0.0;
 		var right = cast(HXP.width, Float);
