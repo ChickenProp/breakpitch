@@ -13,8 +13,10 @@ class BreakoutWorld extends World {
 	override public function begin () : Void {
 		add(new Paddle());
 		add(new Ball());
-		width = 560;
-		height = 440;
+		width = 550;
+		height = 450;
+
+		addBricks();
 	}
 
 	override public function render () : Void {
@@ -24,6 +26,16 @@ class BreakoutWorld extends World {
 		          0xCCCCFF);
 
 		super.render();
+	}
+
+	public function addBricks () : Void {
+		for (i in 0 ... 8) {
+			for (j in 0 ... 11 - i%2) {
+				add(new Brick(left + 25 + j*50 + (i%2)*25,
+				              top + 10 + i*20,
+				              Std.random(0x1000000)));
+			}
+		}
 	}
 
 	function getLeft () : Float { return (HXP.width - width) / 2; }

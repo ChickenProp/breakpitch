@@ -20,7 +20,7 @@ class Ball extends Entity {
 	}
 
 	override public function update () : Void {
-		moveBy(vel.x, vel.y, "paddle");
+		moveBy(vel.x, vel.y, "solid");
 
 		var bw = cast(world, BreakoutWorld);
 
@@ -53,10 +53,18 @@ class Ball extends Entity {
 
 	override public function moveCollideX (e) : Void {
 		vel.x = -vel.x;
+
+		if (Std.is(e, Brick))
+			hitBrick(e);
 	}
 
-	override public function moveCollideY (e) : Void {
-		hitPaddle(e);
+	override public function moveCollideY (e:Entity) : Void {
+		if (Std.is(e, Paddle))
+			hitPaddle(e);
+		else {
+			hitBrick(e);
+			vel.y = -vel.y;
+		}
 	}
 
 	// This needs a lot of tweaking to make it feel good, and currently the
@@ -79,5 +87,9 @@ class Ball extends Entity {
 
 	public function sign(x:Float) : Int {
 		return if (x<0) -1 else if (x > 0) 1 else 0;
+	}
+
+	public function hitBrick(e:Entity) : Void {
+		world.remove(e);
 	}
 }
