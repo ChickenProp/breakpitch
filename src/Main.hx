@@ -45,7 +45,7 @@ class Main extends Engine
 
 		G.mic.setSilenceLevel(0);
 
-		HXP.world = new BreakoutWorld();
+		HXP.world = new FFTWorld();
 	}
 
 	public static function main()

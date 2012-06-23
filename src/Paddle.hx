@@ -5,14 +5,14 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
 class Paddle extends Entity {
-	var vel:Float;
+	public var vel:Float;
 
 	public function new () {
 		super();
 
 		x = HXP.width / 2;
 		y = HXP.height - 50;
-		width = 40;
+		width = 100;
 		height = 10;
 		centerOrigin();
 		type = "paddle";
@@ -21,29 +21,34 @@ class Paddle extends Entity {
 	}
 
 	override public function update () : Void {
-		var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
+		/*var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
 			- (if (Input.check(Key.LEFT)) 1 else 0);
 
-		vel += 3 * dx;
+		vel += 3 * dx;*/
 		vel *= 0.9;
 		x += vel;
 
-		var bw = cast(world, BreakoutWorld);
-		if (x - halfWidth < bw.left) {
-			x = bw.left + halfWidth;
+		var left = 0;
+		var right = HXP.width;
+		
+		if (x - halfWidth < left) {
+			x = left + halfWidth;
 			vel = 0.9 * Math.abs(vel);
 		}
-		else if (x + halfWidth > bw.right) {
-			x = bw.right - halfWidth;
+		else if (x + halfWidth > right) {
+			x = right - halfWidth;
 			vel = -0.9 * Math.abs(vel);
 		}
-
 	}
 
 	override public function render () : Void {
 		super.render();
+		
+		var scale = 1.0 + 0.02 * G.mic.activityLevel;
+		
+		var w = Std.int(halfWidth * scale);
 
-		Draw.rect(Std.int(x - halfWidth), Std.int(y - halfHeight),
-		          width, height, 0x0000CC);
+		Draw.rect(Std.int(x - w), Std.int(y - halfHeight),
+		          w*2, height, 0x0000CC);
 	}
 }
