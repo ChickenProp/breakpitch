@@ -3,9 +3,9 @@ import com.haxepunk.utils.Draw;
 import com.haxepunk.HXP;
 import nme.geom.Point;
 
-class Ball extends Entity, implements hxop.Overload<hxop.ops.PointOps> {
+class Ball extends Entity {
 	var vel:Point;
-	var radius:Float;
+	var radius:Int;
 
 	public function new () {
 		super();
@@ -13,13 +13,13 @@ class Ball extends Entity, implements hxop.Overload<hxop.ops.PointOps> {
 		x = HXP.width / 2;
 		y = HXP.height / 2;
 		radius = 10;
+		mask = new com.haxepunk.masks.Circle(radius, 0, 0);
 
 		vel = new Point(5, 7);
 	}
 
 	override public function update () : Void {
-		x += vel.x;
-		y += vel.y;
+		moveBy(vel.x, vel.y, "paddle");
 
 		var bw = cast(world, BreakoutWorld);
 
@@ -40,14 +40,20 @@ class Ball extends Entity, implements hxop.Overload<hxop.ops.PointOps> {
 			y = bw.top + radius;
 			vel.y = Math.abs(vel.y);
 		}
-
-		vel *= 0.9999;
 	}
 
 
 	override public function render () : Void {
 		super.render();
 
-		Draw.circle(Std.int(x), Std.int(y), Std.int(radius), 0xCC0000);
+		Draw.circle(Std.int(x), Std.int(y), radius, 0xFF0000);
+	}
+
+	override public function moveCollideX (e) : Void {
+		trace("collide x");
+	}
+
+	override public function moveCollideY (e) : Void {
+		trace("collide y");
 	}
 }

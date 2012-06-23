@@ -15,6 +15,7 @@ class Paddle extends Entity {
 		width = 40;
 		height = 10;
 		centerOrigin();
+		type = "paddle";
 
 		vel = 0;
 	}

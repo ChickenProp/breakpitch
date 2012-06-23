@@ -12,7 +12,6 @@
 	<classpath name="src" />
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
-	<haxelib name="tink_macros" />
 
 	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
 	<assets path="assets/sfx" rename="sfx" type="sound" include="*.wav" />
