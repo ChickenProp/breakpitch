@@ -21,16 +21,24 @@ class Paddle extends Entity {
 	}
 
 	override public function update () : Void {
-		/*var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
+		var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
 			- (if (Input.check(Key.LEFT)) 1 else 0);
 
-		vel += 3 * dx;*/
+		vel += 3 * dx;
 		vel *= 0.9;
 		x += vel;
 
-		var left = 0;
-		var right = HXP.width;
-		
+		width = Std.int(100 + 0.02 * G.mic.activityLevel);
+
+		var left = 0.0;
+		var right = cast(HXP.width, Float);
+
+		if (Std.is(world, BreakoutWorld)) {
+			var bw = cast(world, BreakoutWorld);
+			left = bw.left;
+			right = bw.right;
+		}
+
 		if (x - halfWidth < left) {
 			x = left + halfWidth;
 			vel = 0.9 * Math.abs(vel);
@@ -43,12 +51,8 @@ class Paddle extends Entity {
 
 	override public function render () : Void {
 		super.render();
-		
-		var scale = 1.0 + 0.02 * G.mic.activityLevel;
-		
-		var w = Std.int(halfWidth * scale);
 
-		Draw.rect(Std.int(x - w), Std.int(y - halfHeight),
-		          w*2, height, 0x0000CC);
+		Draw.rect(Std.int(x - halfWidth), Std.int(y - halfHeight),
+		          width, height, 0x0000CC);
 	}
 }
