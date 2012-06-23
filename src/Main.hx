@@ -46,29 +46,10 @@ class Main extends Engine
 		G.mic.setSilenceLevel(0);
 
 		HXP.world = new FFTWorld();
-
-		//G.mic.addEventListener(ActivityEvent.ACTIVITY,
-		//                       activityHandler);
-		//G.mic.addEventListener(StatusEvent.STATUS,
-		//                       statusHandler);
-		//G.mic.addEventListener(SampleDataEvent.SAMPLE_DATA,
-		//                       sampleHandler);
 	}
 
 	public static function main()
 	{
 		new Main();
-	}
-
-	public function activityHandler (ev) : Void {
-		//trace("activity!");
-	}
-
-	public function statusHandler (ev) : Void {
-		//trace("status!");
-	}
-
-	public function sampleHandler (ev) : Void {
-		//trace(ev.data.readFloat());
 	}
 }
