@@ -7,11 +7,13 @@ import flash.media.Sound;
 
 class FFTWorld extends World {
 	public var heights:ByteArray;
+	public var pitches:Array<Int>;
 	private var micBytes:ByteArray;
 	private var micSound:Sound;
 	public function new () : Void {
 		super();
 		heights = new ByteArray();
+		pitches = [];
 		micBytes = new ByteArray();
 		micSound = new Sound();
 
@@ -28,15 +30,43 @@ class FFTWorld extends World {
 	override public function render () : Void {
 		super.render();
 
+		// We calculate pitch by simply getting the highest-intensity
+		// band after excluding the lowest ones (which always seem to be
+		// high-intensity). This shouldn't work, but it seems to anyway.
+
 		SoundMixer.computeSpectrum(heights, true);
 
+		var pitch = 0;
+		var maxIntensity = 0.0;
 		var i = 0;
 		while (heights.bytesAvailable != 0 && i < 256) {
-			var height = heights.readFloat();
-			Draw.line(i + 180, 300,
-			          i+180, Std.int(300-100*height),
-			          0xFFFFFF);
+			var intensity = heights.readFloat();
+			var height = Std.int(100 * intensity);
+			var x = 2*i + 64;
+			var y = 200;
+
+			Draw.line(x, y, x, y-height, 0xFFFFFF);
+			Draw.line(x+1, y, x+1, y-height, 0xFFFFFF);
+
 			i++;
+
+			if (i > 10 && intensity > maxIntensity) {
+				pitch = i;
+				maxIntensity = intensity;
+			}
+		}
+
+		pitches.push(pitch);
+		if (pitches.length > 15)
+			pitches.shift();
+
+		Draw.line(80, 330, 170, 330, 0x00FF00);
+
+		for (i in 0 ... pitches.length) {
+			var color = 0x110000 * (i+1);
+			var height = pitches[i]*2;
+			Draw.line(100, 400-height, 150, 400-height, color);
+			Draw.line(100, 401-height, 150, 401-height, color);
 		}
 	}
 
