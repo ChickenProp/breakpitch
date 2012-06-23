@@ -90,6 +90,6 @@ class Ball extends Entity {
 	}
 
 	public function hitBrick(e:Entity) : Void {
-		world.remove(e);
+		cast(e, Brick).hit();
 	}
 }
