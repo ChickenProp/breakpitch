@@ -1,11 +1,9 @@
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
+import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Key;
 import flash.system.Security;
 import flash.system.SecurityPanel;
-import flash.media.Microphone;
-import flash.events.ActivityEvent;
-import flash.events.StatusEvent;
-import flash.events.SampleDataEvent;
 
 class Main extends Engine
 {
@@ -45,7 +43,14 @@ class Main extends Engine
 
 		G.mic.setSilenceLevel(0);
 
-		HXP.world = new FFTWorld();
+		HXP.world = new BreakoutWorld();
+	}
+
+	override public function update () : Void {
+		super.update();
+
+		if (Input.check(Key.F5))
+			HXP.console.enable();
 	}
 
 	public static function main()
