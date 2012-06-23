@@ -6,6 +6,7 @@ import nme.geom.Point;
 class Ball extends Entity {
 	var vel:Point;
 	var radius:Int;
+	var scale:Float;
 
 	public function new () {
 		super();
@@ -14,6 +15,7 @@ class Ball extends Entity {
 		y = HXP.height / 2;
 		width = 10;
 		height = 10;
+		scale = 1;
 		centerOrigin();
 
 		vel = new Point(5, 7);
@@ -27,19 +29,23 @@ class Ball extends Entity {
 		if (x + halfWidth > bw.right) {
 			x = bw.right - halfWidth;
 			vel.x = - Math.abs(vel.x);
+			bounceSize();
 		}
 		else if (x - halfWidth < bw.left) {
 			x = bw.left + halfWidth;
 			vel.x = Math.abs(vel.x);
+			bounceSize();
 		}
 
 		if (y + halfHeight > bw.bottom) {
 			y = bw.bottom - halfHeight;
 			vel.y = - Math.abs(vel.y);
+			bounceSize();
 		}
 		else if (y - halfHeight < bw.top) {
 			y = bw.top + halfHeight;
 			vel.y = Math.abs(vel.y);
+			bounceSize();
 		}
 	}
 
@@ -47,11 +53,14 @@ class Ball extends Entity {
 	override public function render () : Void {
 		super.render();
 
-		Draw.rect(Std.int(x - halfWidth), Std.int(y - halfHeight),
-		          width, height, 0xFF0000);
+		Draw.rect(Std.int(x - halfWidth*scale),
+		          Std.int(y - halfHeight*scale),
+		          Std.int(width * scale), Std.int(height * scale),
+		          0xFF0000);
 	}
 
 	override public function moveCollideX (e) : Void {
+		bounceSize();
 		vel.x = -vel.x;
 
 		if (Std.is(e, Brick))
@@ -59,6 +68,7 @@ class Ball extends Entity {
 	}
 
 	override public function moveCollideY (e:Entity) : Void {
+		bounceSize();
 		if (Std.is(e, Paddle))
 			hitPaddle(e);
 		else {
@@ -91,5 +101,14 @@ class Ball extends Entity {
 
 	public function hitBrick(e:Entity) : Void {
 		cast(e, Brick).hit();
+	}
+
+	public function bounceSize () : Void {
+		var ease = function (t) {
+			return 0.5 * (Math.cos(x * 2 * Math.PI) - 1);
+		}
+
+		scale = 1.2;
+		HXP.tween(this, {scale: 1.0}, 0.2, { ease: ease });
 	}
 }
