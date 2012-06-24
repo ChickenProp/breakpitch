@@ -36,6 +36,15 @@ class BreakoutWorld extends World {
 			HXP.world = new BreakoutWorld(level + 1);
 		if (Input.pressed(Key.DOWN))
 			HXP.world = new BreakoutWorld(level - 1);
+
+		var bricks = [];
+		getClass(Brick, bricks);
+		if (bricks.length == 0)
+			win();
+	}
+
+	public function win () : Void {
+		HXP.world = new BreakoutWorld(level + 1);
 	}
 
 	override public function begin () : Void {
