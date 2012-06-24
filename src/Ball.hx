@@ -8,6 +8,7 @@ class Ball extends Entity {
 	var radius:Int;
 	var scale:Float;
 	var launched:Bool;
+	public var dead:Bool;
 
 	public function new () {
 		super();
@@ -21,6 +22,7 @@ class Ball extends Entity {
 		type = "ball";
 
 		vel = new Point(0, 0);
+		dead = false;
 	}
 
 	override public function update () : Void {
@@ -43,9 +45,7 @@ class Ball extends Entity {
 		}
 
 		if (y + halfHeight > bw.bottom) {
-			y = bw.bottom - halfHeight;
-			vel.y = - Math.abs(vel.y);
-			bounceSize();
+			dead = true;
 		}
 		else if (y - halfHeight < bw.top) {
 			y = bw.top + halfHeight;

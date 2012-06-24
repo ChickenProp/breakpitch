@@ -16,12 +16,15 @@ class BreakoutWorld extends World {
 	public var level:Int;
 	public var seeds:Array<Int>;
 	public var paddle:Paddle;
+	public var ball:Ball;
+	public var ballsLeft:Int;
 
 	public function new (level:Int) {
 		super();
 		this.level = level;
 		width = 550;
 		height = 450;
+		ballsLeft = 3;
 
 		seeds = [8, 10, 4, 5, 6, 7, 9, 26, 11, 14];
 	}
@@ -39,15 +42,47 @@ class BreakoutWorld extends World {
 		if (Input.pressed(Key.DOWN))
 			HXP.world = new BreakoutWorld(level - 1);
 
+		if (Input.pressed(Key.F6)) {
+			var bricks = [];
+			getClass(Brick, bricks);
+			for (b in bricks)
+				cast(b, Brick).hit();
+		}
+
 		var bricks = [];
 		getClass(Brick, bricks);
 		if (bricks.length == 0)
 			win();
+
+		if (ball.dead) {
+			remove(ball);
+			placeBall();
+			ballsLeft--;
+
+			if (ballsLeft == 0)
+				HXP.world = new BreakoutWorld(0);
+		}
 	}
 
 	public function win () : Void {
-		HXP.world = new BreakoutWorld(level + 1);
 		Audio.play("win");
+		level++;
+		ballsLeft++;
+		addBricks(getSeed());
+	}
+
+	public function getSeed () : Int {
+		if (level < seeds.length)
+			return seeds[level];
+		else {
+			var disallowed = [0, 1, 16, 17]; // these look bad.
+			while(true) {
+				var seed = Std.random(32);
+				if (disallowed.indexOf(seed) == -1)
+					return seed;
+			}
+			return 0;
+		}
 	}
 
 	override public function begin () : Void {
@@ -67,10 +102,10 @@ class BreakoutWorld extends World {
 	}
 
 	public function placeBall () : Void {
-		var b = new Ball();
-		b.x = paddle.x;
-		b.y = paddle.y - paddle.halfHeight - b.halfHeight;
-		add(b);
+		ball = new Ball();
+		ball.x = paddle.x;
+		ball.y = paddle.y - paddle.halfHeight - ball.halfHeight;
+		add(ball);
 	}
 
 	override public function render () : Void {
@@ -78,6 +113,10 @@ class BreakoutWorld extends World {
 		          HXP.height - height,
 		          width, height,
 		          0xCCCCFF);
+
+		for (i in 0 ... ballsLeft-1) {
+			Draw.rect(10 + 20*i, 10, 10, 10, 0xFF0000);
+		}
 
 		super.render();
 	}

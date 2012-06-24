@@ -28,7 +28,6 @@ class Audio
 	public static function play (sound:String):Void
 	{
 		if (! Reflect.field(sounds, sound)) {
-			trace(sound);
 			Reflect.setField(sounds, sound, new Sfx("sfx/" + sound + ".mp3"));
 		}
 		
