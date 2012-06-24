@@ -44,7 +44,7 @@ class Main extends Engine
 
 		G.mic.setSilenceLevel(0);
 
-		HXP.world = new BreakoutWorld();
+		HXP.world = new BreakoutWorld(0);
 	}
 
 	override public function update () : Void {
@@ -52,9 +52,6 @@ class Main extends Engine
 
 		if (Input.check(Key.F5))
 			HXP.console.enable();
-
-		if (Input.check(Key.R))
-			HXP.world = new BreakoutWorld();
 	}
 
 	public static function main()
