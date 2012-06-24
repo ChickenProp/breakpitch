@@ -1,10 +1,12 @@
 import com.haxepunk.Sfx;
+import com.haxepunk.HXP;
 
 class Audio
 {
 	private static var sounds = {};
 	
 	public static var music:Sfx;
+	public static var musicVolume:Float;
 	
 	public static function init ():Void
 	{
@@ -12,8 +14,15 @@ class Audio
 		
 		music.loop();
 		
+		musicVolume = 1.0;
+		
 		//FP.stage.addEventListener(Event.ACTIVATE, focusGain);
 		//FP.stage.addEventListener(Event.DEACTIVATE, focusLost);
+	}
+	
+	public static function update ():Void
+	{
+		music.volume = musicVolume;
 	}
 	
 	public static function play (sound:String):Void
@@ -25,6 +34,11 @@ class Audio
 		
 		if (Reflect.field(sounds, sound)) {
 			Reflect.field(sounds, sound).play();
+		}
+		
+		if (sound == "win") {
+			musicVolume = 0.2;
+			HXP.tween(Audio, {musicVolume: 1.0}, 1.0);
 		}
 	}
 	

@@ -33,8 +33,9 @@ class BreakoutWorld extends World {
 		// but we probably won't have any of these in release.
 		if (Input.check(Key.R))
 			HXP.world = new BreakoutWorld(level);
-		if (Input.pressed(Key.UP))
+		if (Input.pressed(Key.UP)) {
 			HXP.world = new BreakoutWorld(level + 1);
+		}
 		if (Input.pressed(Key.DOWN))
 			HXP.world = new BreakoutWorld(level - 1);
 
@@ -46,6 +47,7 @@ class BreakoutWorld extends World {
 
 	public function win () : Void {
 		HXP.world = new BreakoutWorld(level + 1);
+		Audio.play("win");
 	}
 
 	override public function begin () : Void {

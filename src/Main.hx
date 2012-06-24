@@ -50,6 +50,8 @@ class Main extends Engine
 
 	override public function update () : Void {
 		super.update();
+		
+		Audio.update();
 
 		if (Input.check(Key.F5))
 			HXP.console.enable();
