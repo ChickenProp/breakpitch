@@ -43,6 +43,8 @@ class Paddle extends Entity {
 			pitch /= (maxPitch - minPitch) * 0.5;
 			
 			vel += pitch * 40;
+
+			cast(world.typeFirst("ball"), Ball).launch();
 		} else {
 			pitch = oldPitch * 0.8;
 		}
