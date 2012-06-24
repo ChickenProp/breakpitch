@@ -7,6 +7,7 @@ class Ball extends Entity {
 	var vel:Point;
 	var radius:Int;
 	var scale:Float;
+	var launched:Bool;
 
 	public function new () {
 		super();
@@ -17,11 +18,15 @@ class Ball extends Entity {
 		height = 10;
 		scale = 1;
 		centerOrigin();
+		type = "ball";
 
-		vel = new Point(5, 7);
+		vel = new Point(0, 0);
 	}
 
 	override public function update () : Void {
+		if (!launched)
+			return;
+
 		moveBy(vel.x, vel.y, "solid");
 
 		var bw = cast(world, BreakoutWorld);
@@ -60,6 +65,13 @@ class Ball extends Entity {
 		if (dy*vel.y < minVY) vel.y = dy*minVY;
 	}
 
+	public function launch () : Void {
+		if (!launched) {
+			vel.y = 8;
+			vel.x = cast(world, BreakoutWorld).paddle.vel;
+		}
+		launched = true;
+	}
 
 	override public function render () : Void {
 		super.render();

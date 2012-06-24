@@ -15,6 +15,7 @@ class BreakoutWorld extends World {
 
 	public var level:Int;
 	public var seeds:Array<Int>;
+	public var paddle:Paddle;
 
 	public function new (level:Int) {
 		super();
@@ -48,8 +49,9 @@ class BreakoutWorld extends World {
 	}
 
 	override public function begin () : Void {
-		add(new Paddle());
-		add(new Ball());
+		paddle = new Paddle();
+		add(paddle);
+		placeBall();
 
 		var seed:Int = 0;
 		if (level < seeds.length)
@@ -60,6 +62,13 @@ class BreakoutWorld extends World {
 				seed = Std.random(32);
 		}
 		addBricks(seed);
+	}
+
+	public function placeBall () : Void {
+		var b = new Ball();
+		b.x = paddle.x;
+		b.y = paddle.y - paddle.halfHeight - b.halfHeight;
+		add(b);
 	}
 
 	override public function render () : Void {
