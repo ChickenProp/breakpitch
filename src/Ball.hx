@@ -76,6 +76,8 @@ class Ball extends Entity {
 
 		if (Std.is(e, Brick))
 			hitBrick(e);
+		else
+			Audio.play("bounce");
 		
 		if (Std.is(e, Paddle))
 			if (vel.y > 0) vel.y = -vel.y;
@@ -83,9 +85,10 @@ class Ball extends Entity {
 
 	override public function moveCollideY (e:Entity) : Void {
 		bounceSize();
-		if (Std.is(e, Paddle))
+		if (Std.is(e, Paddle)) {
 			hitPaddle(e);
-		else {
+			Audio.play("bounce");
+		} else {
 			hitBrick(e);
 			vel.y = -vel.y;
 		}
@@ -116,6 +119,7 @@ class Ball extends Entity {
 
 	public function hitBrick(e:Entity) : Void {
 		cast(e, Brick).hit();
+		Audio.play("brick");
 	}
 
 	public function bounceSize () : Void {
@@ -125,5 +129,7 @@ class Ball extends Entity {
 
 		scale = 1.2;
 		HXP.tween(this, {scale: 1.0}, 0.2, { ease: ease });
+		
+		Audio.play("bounce");
 	}
 }
