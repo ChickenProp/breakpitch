@@ -85,13 +85,30 @@ class BreakoutWorld extends World {
 		var bbot = btop + 7*20;
 
 		var color = Std.random(0x1000000);
-		add(new Brick(left + xoff, btop + yoff, color));
+		addBrick(left + xoff, btop + yoff, color);
 		if (i != 5)
-			add(new Brick(right - xoff, btop + yoff, color));
+			addBrick(right - xoff, btop + yoff, color);
 		if (j != 3)
-			add(new Brick(left + xoff, bbot - yoff, color));
+			addBrick(left + xoff, bbot - yoff, color);
 		if (j != 3 && i != 5)
-			add(new Brick(right - xoff, bbot - yoff, color));
+			addBrick(right - xoff, bbot - yoff, color);
+	}
+
+	public function addBrick(x:Float, y:Float, color:Int) : Void {
+		var dropheight = top + 7*20;
+		var b = new Brick(x, y-dropheight, color);
+		HXP.tween(b, {y: y}, 0.4 + Math.random()/5, {ease: bounceEase});
+		add(b);
+	}
+
+	public function bounceEase (t:Float) : Float {
+		var peak = 0.7;
+		if (t < peak)
+			return 1.2 * Math.sin(Math.PI*t / 1.6);
+		else {
+			var phase = (t - peak) / (1 - peak); // [0, 1]
+			return 1.2 - 0.1 * (1 - Math.cos(Math.PI * phase));
+		}
 	}
 
 	function getLeft () : Float { return (HXP.width - width) / 2; }
