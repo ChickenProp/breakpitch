@@ -35,6 +35,7 @@ class Main extends Engine
 
 		G.init();
 		Pitch.init();
+		Audio.init();
 
 		if (G.mic == null)
 			return;
