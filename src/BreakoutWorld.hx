@@ -17,12 +17,14 @@ class BreakoutWorld extends World {
 	public var seeds:Array<Int>;
 	public var paddle:Paddle;
 	public var ball:Ball;
+	public var ballsLeft:Int;
 
 	public function new (level:Int) {
 		super();
 		this.level = level;
 		width = 550;
 		height = 450;
+		ballsLeft = 3;
 
 		seeds = [8, 10, 4, 5, 6, 7, 9, 26, 11, 14];
 	}
@@ -47,11 +49,30 @@ class BreakoutWorld extends World {
 		if (ball.dead) {
 			remove(ball);
 			placeBall();
+			ballsLeft--;
+
+			if (ballsLeft == 0)
+				HXP.world = new BreakoutWorld(0);
 		}
 	}
 
 	public function win () : Void {
-		HXP.world = new BreakoutWorld(level + 1);
+		level++;
+		addBricks(getSeed());
+	}
+
+	public function getSeed () : Int {
+		if (level < seeds.length)
+			return seeds[level];
+		else {
+			var disallowed = [0, 1, 16, 17]; // these look bad.
+			while(true) {
+				var seed = Std.random(32);
+				if (disallowed.indexOf(seed) == -1)
+					return seed;
+			}
+			return 0;
+		}
 	}
 
 	override public function begin () : Void {
@@ -82,6 +103,10 @@ class BreakoutWorld extends World {
 		          HXP.height - height,
 		          width, height,
 		          0xCCCCFF);
+
+		for (i in 0 ... ballsLeft-1) {
+			Draw.rect(10 + 20*i, 10, 10, 10, 0xFF0000);
+		}
 
 		super.render();
 	}
