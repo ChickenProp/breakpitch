@@ -52,6 +52,9 @@ class Main extends Engine
 
 		if (Input.check(Key.F5))
 			HXP.console.enable();
+
+		if (Input.check(Key.R))
+			HXP.world = new BreakoutWorld();
 	}
 
 	public static function main()
