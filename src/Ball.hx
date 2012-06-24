@@ -48,9 +48,9 @@ class Ball extends Entity {
 			bounceSize();
 		}
 		
-		var maxVY = 20;
+		var maxVY = 10;
 		var minVY = 5;
-		var maxVX = 10;
+		var maxVX = 5;
 		
 		var dx = if (vel.x < 0) -1 else 1;
 		var dy = if (vel.y < 0) -1 else 1;
@@ -76,6 +76,9 @@ class Ball extends Entity {
 
 		if (Std.is(e, Brick))
 			hitBrick(e);
+		
+		if (Std.is(e, Paddle))
+			if (vel.y > 0) vel.y = -vel.y;
 	}
 
 	override public function moveCollideY (e:Entity) : Void {
@@ -92,19 +95,19 @@ class Ball extends Entity {
 	// ball keeps getting faster which is really bad.
 	public function hitPaddle(e:Entity) : Void {
 		var p = cast(e, Paddle);
+		
+		y = p.y - p.halfHeight - halfHeight;
 
 		var maxVY = 20;
 		var minVY = 5;
-		var maxVX = 8;
 		
 		var offx = (x - p.x)/p.halfWidth;
 		var newvelx = vel.x + p.vel * 0.2 + offx * 5;
 		var newvely = Math.sqrt(Math.max(vel.x*vel.x + vel.y*vel.y - newvelx*newvelx, 0));
 		newvely = Math.min(maxVY, Math.max(minVY, newvely));
-		newvelx = Math.min(maxVX, newvelx);
 
 		vel.x = newvelx;
-		vel.y = - sign(vel.y) * newvely;
+		vel.y = -newvely;
 	}
 
 	public function sign(x:Float) : Int {

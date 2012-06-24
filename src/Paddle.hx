@@ -6,6 +6,7 @@ import com.haxepunk.utils.Key;
 
 class Paddle extends Entity {
 	public var vel:Float;
+	public var pitch:Float;
 
 	public function new () {
 		super();
@@ -18,6 +19,7 @@ class Paddle extends Entity {
 		type = "solid";
 
 		vel = 0;
+		pitch = 0;
 	}
 
 	override public function update () : Void {
@@ -26,15 +28,23 @@ class Paddle extends Entity {
 
 		vel += 3 * dx;
 		
-		var pitch = Pitch.getPitch();
+		var oldPitch = pitch;
+		pitch = Pitch.getPitch();
+		
+		var minPitch = 50.0;
+		var maxPitch = 90.0;
 		
 		if (pitch > 20) {
-			if (pitch < 50) pitch = 50;
-			if (pitch > 90) pitch = 90;
+			if (pitch < minPitch) pitch = minPitch;
+			if (pitch > maxPitch) pitch = maxPitch;
 		
-			pitch -= 70;
+			pitch -= (minPitch + maxPitch) * 0.5;
 			
-			vel += pitch;
+			pitch /= (maxPitch - minPitch) * 0.5;
+			
+			vel += pitch * 40;
+		} else {
+			pitch = oldPitch * 0.8;
 		}
 		
 		var max = 20;
@@ -71,5 +81,7 @@ class Paddle extends Entity {
 
 		Draw.rect(Std.int(x - halfWidth), Std.int(y - halfHeight),
 		          width, height, 0x0000CC);
+		
+		Draw.rect(Std.int(x + pitch * (halfWidth-1) - 1), Std.int(y - halfHeight + 2), 2, height-4, 0xFFFFFF);
 	}
 }
