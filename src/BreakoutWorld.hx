@@ -86,6 +86,8 @@ class BreakoutWorld extends World {
 	}
 
 	override public function begin () : Void {
+		G.score = 0;
+		add(new ScoreDisplay());
 		paddle = new Paddle();
 		add(paddle);
 		placeBall();
