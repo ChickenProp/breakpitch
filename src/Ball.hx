@@ -4,7 +4,7 @@ import com.haxepunk.HXP;
 import nme.geom.Point;
 
 class Ball extends Entity {
-	var vel:Point;
+	public var vel:Point;
 	var radius:Int;
 	var scale:Float;
 	var launched:Bool;
@@ -84,7 +84,6 @@ class Ball extends Entity {
 
 	override public function moveCollideX (e) : Void {
 		bounceSize();
-		vel.x = -vel.x;
 
 		if (Std.is(e, Brick))
 			hitBrick(e);
@@ -93,6 +92,8 @@ class Ball extends Entity {
 		
 		if (Std.is(e, Paddle))
 			if (vel.y > 0) vel.y = -vel.y;
+
+		vel.x = -vel.x;
 	}
 
 	override public function moveCollideY (e:Entity) : Void {

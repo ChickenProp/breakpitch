@@ -26,6 +26,9 @@ class Brick extends Entity {
 		var self = this;
 		HXP.tween(graphic, {scale: 0}, 0.2,
 		          {complete: function () { world.remove(self); }});
-		world.add(new TextParticle("10", x, y, 0, -1, 0.2));
+
+		var ball = cast(world, BreakoutWorld).ball;
+		world.add(new TextParticle("10", x, y,
+		                           ball.vel.x/10, ball.vel.y/10, 0.3));
 	}
 }
