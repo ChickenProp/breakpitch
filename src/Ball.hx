@@ -9,6 +9,7 @@ class Ball extends Entity {
 	var scale:Float;
 	var launched:Bool;
 	public var dead:Bool;
+	public var combo:Int;
 
 	public function new () {
 		super();
@@ -23,6 +24,7 @@ class Ball extends Entity {
 
 		vel = new Point(0, 0);
 		dead = false;
+		combo = 1;
 	}
 
 	override public function update () : Void {
@@ -124,6 +126,8 @@ class Ball extends Entity {
 
 		vel.x = newvelx;
 		vel.y = -newvely;
+
+		combo = 1;
 	}
 
 	public function sign(x:Float) : Int {
@@ -132,6 +136,7 @@ class Ball extends Entity {
 
 	public function hitBrick(e:Entity) : Void {
 		cast(e, Brick).hit();
+		combo++;
 		Audio.play("brick");
 	}
 

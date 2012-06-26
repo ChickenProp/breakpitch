@@ -28,7 +28,8 @@ class Brick extends Entity {
 		          {complete: function () { world.remove(self); }});
 
 		var ball = cast(world, BreakoutWorld).ball;
-		world.add(new TextParticle("10", x, y,
+		var score = 10 * ball.combo;
+		world.add(new TextParticle(Std.string(score), x, y,
 		                           ball.vel.x/10, ball.vel.y/10, 0.3));
 	}
 }
