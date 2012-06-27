@@ -4,9 +4,18 @@ import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
+
+enum InputType {
+	PITCH_CONTROLS_DIRECTION;
+	PITCH_CONTROLS_POSITION;
+}
+
+
 class Paddle extends Entity {
 	public var vel:Float;
 	public var pitch:Float;
+	
+	public static inline var controls:InputType = PITCH_CONTROLS_POSITION;
 
 	public function new () {
 		super();
@@ -31,8 +40,17 @@ class Paddle extends Entity {
 		var oldPitch = pitch;
 		pitch = Pitch.getPitch();
 		
-		var minPitch = 50.0;
-		var maxPitch = 90.0;
+		var left = 0.0;
+		var right = cast(HXP.width, Float);
+
+		if (Std.is(world, BreakoutWorld)) {
+			var bw = cast(world, BreakoutWorld);
+			left = bw.left;
+			right = bw.right;
+		}
+
+		var minPitch = 40.0;
+		var maxPitch = 60.0;
 		
 		if (pitch > 20) {
 			if (pitch < minPitch) pitch = minPitch;
@@ -42,31 +60,33 @@ class Paddle extends Entity {
 			
 			pitch /= (maxPitch - minPitch) * 0.5;
 			
-			vel += pitch * 40;
-
+			if (controls == PITCH_CONTROLS_POSITION) {
+				var target = (pitch * 0.5 + 0.5) * (right - left - width) + left + halfWidth;
+				
+				vel = (target - x);
+				
+				x += vel * 0.5;
+				
+				y += (HXP.height - 20 - y) * 0.5;
+			} else {
+				vel += pitch * 40;
+				
+				var max = 20;
+		
+				if (vel < -max) vel = -max;
+				if (vel > max) vel = max;
+		
+				vel *= 0.8;
+				x += vel;
+			}
+			
 			cast(world.typeFirst("ball"), Ball).launch();
 		} else {
 			pitch = oldPitch * 0.8;
+			y += (HXP.height + 50 - y) * 0.2;
 		}
 		
-		var max = 20;
-		
-		if (vel < -max) vel = -max;
-		if (vel > max) vel = max;
-		
-		vel *= 0.8;
-		x += vel;
-
 		width = Std.int(150 + 0.5 * G.mic.activityLevel);
-
-		var left = 0.0;
-		var right = cast(HXP.width, Float);
-
-		if (Std.is(world, BreakoutWorld)) {
-			var bw = cast(world, BreakoutWorld);
-			left = bw.left;
-			right = bw.right;
-		}
 
 		if (x - halfWidth < left) {
 			x = left + halfWidth;
