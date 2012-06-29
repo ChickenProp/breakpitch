@@ -101,7 +101,6 @@ class Pitch {
 	}
 
 	private static function micSampleDataHandler(event:SampleDataEvent) : Void {
-		trace("hi1");
 		// Get number of available input samples
 		var len = Std.int(event.data.length/4);
 		
@@ -115,7 +114,6 @@ class Pitch {
 		}
 
 		needFft = true;
-		trace("hi");
         }
 }
 

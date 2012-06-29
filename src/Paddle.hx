@@ -79,8 +79,10 @@ class Paddle extends Entity {
 				vel *= 0.8;
 				x += vel;
 			}
-			
-			cast(world.typeFirst("ball"), Ball).launch();
+
+			var ball = cast(world.typeFirst("ball"), Ball);
+			if (ball != null)
+				ball.launch();
 		} else {
 			pitch = oldPitch * 0.8;
 			y += (HXP.height + 50 - y) * 0.2;
