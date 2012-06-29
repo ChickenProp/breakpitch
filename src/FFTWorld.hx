@@ -48,18 +48,9 @@ class FFTWorld extends World {
 		micBytes = new ByteArray();
 		micSound = new Sound();
 
-		G.mic.setLoopBack(false);
-		G.mic.gain = 60;
-		G.mic.rate = Std.int(SAMPLE_RATE/1000);
-
-		G.mic.addEventListener(SampleDataEvent.SAMPLE_DATA,
-		                       micSampleDataHandler);
-		/*micSound.addEventListener(SampleDataEvent.SAMPLE_DATA,
-		                           soundSampleDataHandler);*/
+		//player = new Paddle();
 		
-		player = new Paddle();
-		
-		add(player);
+		//add(player);
 		
 		real = new Vector<Float>(N, true);
 		imaginary = new Vector<Float>(N, true);
@@ -73,52 +64,25 @@ class FFTWorld extends World {
 			m_win[i] = (4.0/N) * 0.5*(1-Math.cos(2*Math.PI*i/N));
 		}
 	}
-	
-	override public function update () : Void {
-		super.update();
-		
-		var i;
-		
-		
-	}
 
 	override public function render () : Void {
 		super.render();
 
-		// We calculate pitch by simply getting the highest-intensity
-		// band after excluding the lowest ones (which always seem to be
-		// high-intensity). This shouldn't work, but it seems to anyway.
+		var fft = Pitch.getFFT();
 
-		//SoundMixer.computeSpectrum(heights, true, 1);
-		
-		var i = 0;
-		var pos:UInt = m_writePos;
-		
-		for (i in 0 ... N) {
-			real[i] = m_win[i]*buffer[pos];
-			imaginary[i] = 0.0;
-			pos = (pos+1)%BUF_LEN;
-		}
-		
-		fft.run(real, imaginary);
-
-		var total = 0;
-		var pitch = 0;
-		var maxIntensity = 0.0;
-		
 		var SCALE = 20/Math.log(10);
-		
-		i = 0;
+
+		var i = 0;
 		while (i < Std.int(N)) {
-			tmp[i] = Math.sqrt(real[i]*real[i] + imaginary[i]*imaginary[i]);
+			tmp[i] = fft[i];
 			tmp[i] = SCALE*Math.log( tmp[i] + MIN_VALUE ) + 60;
 			
 			if (tmp[i] < 0) tmp[i] = 0;
+			//trace(Std.format("$i : ${tmp[i]}"));
 			i++;
 		}
-	
+
 		i = 0;
-		
 		while (i < Std.int(N)) {
 			var intensity = tmp[i];
 			
@@ -131,8 +95,8 @@ class FFTWorld extends World {
 			
 			i++;
 		}
-		
-		pitch = findCorrelation();
+
+		var pitch = Pitch.getPitch();
 		
 		i = 0;
 		while (i < Std.int(N)) {
@@ -203,10 +167,10 @@ class FFTWorld extends World {
 		
 			value -= 70;
 		
-			player.vel += value * 0.1;
+			//player.vel += value * 0.1;
 			
-			if (player.vel < -10) player.vel = -10;
-			if (player.vel > 10) player.vel = 10;
+			//if (player.vel < -10) player.vel = -10;
+			//if (player.vel > 10) player.vel = 10;
 			
 			//if (player.x < 0) player.x = 0;
 			//if (player.x > 600 - 50) player.x = 550;
@@ -237,58 +201,4 @@ class FFTWorld extends World {
 		
 		return 0;
 	}
-	
-	/*private function findCorrelation (a:Vector<Float>): UInt
-	{
-		var len:Int = Std.int(a.length/2);
-		var i;
-		var j;
-		
-		var prevDx = 0.0;
-		var prevDiff=0.0;
-		var maxDiff=0.0;
-		
-		for ( i in 0 ... len ) {
-			var diff = 0.0;
-			for ( j in 0 ... len ) {
-				diff += Math.abs(a[j]-a[i+j]);
-			}
-
-			//graph1.add(diff);
-
-			var dx = prevDiff-diff;
-
-			// change of sign in dx
-			if ( dx < 0 && prevDx > 0 ) {
-				// only look for troughs that drop to less than 10% of peak
-				if ( diff < (0.1*maxDiff) ) {
-					//graph1.mark(i-1);
-					
-					return i - 1;
-				}
-			}
-
-			prevDx = dx;
-			prevDiff=diff;
-			maxDiff=Math.max(diff,maxDiff);
-		}
-		
-		return 0;
-	}*/
-	
-	private var m_writePos:UInt;
-	
-	private function micSampleDataHandler(event:SampleDataEvent) : Void {
-		// Get number of available input samples
-		var len = Std.int(event.data.length/4);
-		
-		// Read the input data and stuff it into 
-		// the circular buffer
-		var i;
-		for (i in 0 ... len)
-		{
-			buffer[m_writePos] = event.data.readFloat();
-			m_writePos = (m_writePos+1)%BUF_LEN;
-		}
-        }
 }

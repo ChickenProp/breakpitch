@@ -45,7 +45,8 @@ class Main extends Engine
 
 		G.mic.setSilenceLevel(0);
 
-		HXP.world = new BreakoutWorld(0);
+		//HXP.world = new BreakoutWorld(0);
+		HXP.world = new FFTWorld();
 	}
 
 	override public function update () : Void {
