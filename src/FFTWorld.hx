@@ -29,20 +29,20 @@ class FFTWorld extends World {
 		super.render();
 
 		var fft = Pitch.getFFT();
-
-		var SCALE = 20/Math.log(10);
+		var correl = Pitch.getCorrelation();
 
 		for (i in 0 ... Pitch.NUM_SAMPLES) {
-			var intensity = SCALE * Math.log(fft[i]+MIN_VALUE) + 60;
-			if (intensity < 0)
-				intensity = 0;
-
-			var height = Std.int(intensity);
+			var height = Std.int(intensity(fft[i]));
 			var x = 2*i + 64;
 			var y = 200;
 
 			Draw.line(x, y, x, y-height, 0xFFFFFF);
 			Draw.line(x+1, y, x+1, y-height, 0xFFFFFF);
+
+			height = Std.int(intensity(correl[i]));
+			y = 250;
+			Draw.line(x, y, x, y+height, 0xFFFFFF);
+			Draw.line(x+1, y, x+1, y+height, 0xFFFFFF);
 		}
 
 		var pitch = Pitch.getPitch();
@@ -57,5 +57,11 @@ class FFTWorld extends World {
 		}
 
 		Draw.line(300, 400, 300, Std.int(400 - G.mic.activityLevel), 0xFFFFFFFF);
+	}
+
+	function intensity (x:Float) : Float {
+		var SCALE = 20/Math.log(10);
+		var intensity = SCALE * Math.log(x + MIN_VALUE) + 60;
+		return Math.max(intensity, 0);
 	}
 }

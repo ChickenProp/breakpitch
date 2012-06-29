@@ -4,12 +4,14 @@ import flash.media.Sound;
 import flash.Vector;
 
 class Pitch {
-	private static var needFft:Bool;
+	private static var needFFT:Bool;
+	private static var needIFFT:Bool;
 
 	private static var fft:FFT2;
 	private static var ifft:FFT2;
 	
 	private static var real:Vector<Float>;
+	private static var real2:Vector<Float>;
 	private static var imaginary:Vector<Float>;
 	private static var buffer:Vector<Float>;
 	private static var m_win:Vector<Float>;
@@ -28,7 +30,8 @@ class Pitch {
 	
 	public static function init ():Void
 	{
-		needFft = true;
+		needFFT = true;
+		needIFFT = true;
 
 		fft = new FFT2();
 		fft.init(LOGN);
@@ -46,6 +49,7 @@ class Pitch {
 		                       micSampleDataHandler);
 		
 		real = new Vector<Float>(N, true);
+		real2 = new Vector<Float>(N, true);
 		imaginary = new Vector<Float>(N, true);
 		buffer = new Vector<Float>(N, true);
 		m_win = new Vector<Float>(N, true);
@@ -58,7 +62,7 @@ class Pitch {
 	}
 
 	public static function runFFT () : Void {
-		if (! needFft)
+		if (! needFFT)
 			return;
 
 		var i = 0;
@@ -76,21 +80,31 @@ class Pitch {
 
 		for (i in 0 ... len) {
 			real[i] = Math.sqrt(real[i] * real[i] + imaginary[i]*imaginary[i]);
+			real2[i] = real[i];
 			imaginary[i] = 0.0;
-			//trace(Std.format("$i: ${real[i]}"));
 		}
 
-		needFft = false;
+		needFFT = false;
+		needIFFT = true;
+	}
+
+	public static function runCorrelation () : Void {
+		runFFT();
+		if (! needIFFT)
+			return;
+
+		ifft.run(real2, imaginary, true);
+
+		needIFFT = false;
 	}
 
 	public static function getPitch (): Int
 	{
 		runFFT();
+		runCorrelation();
 
-		ifft.run(real, imaginary, true);
-		
 		for (i in 10 ... Std.int(N/2)) {
-			if (real[i] > 0.004) return i;
+			if (real2[i] > 0.004) return i;
 		}
 		
 		return 0;
@@ -99,6 +113,11 @@ class Pitch {
 	public static function getFFT () : Vector<Float> {
 		runFFT();
 		return real;
+	}
+
+	public static function getCorrelation () : Vector<Float> {
+		runCorrelation();
+		return real2;
 	}
 
 	private static function micSampleDataHandler(event:SampleDataEvent) : Void {
@@ -114,6 +133,6 @@ class Pitch {
 			m_writePos = (m_writePos+1)%BUF_LEN;
 		}
 
-		needFft = true;
+		needFFT = true;
         }
 }
