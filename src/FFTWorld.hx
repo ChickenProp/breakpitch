@@ -14,14 +14,8 @@ class FFTWorld extends World {
 
 	private var player:Paddle;
 
-	private static var SAMPLE_RATE:Float = 11025/2;	// Actual microphone sample rate (Hz)
-	private static var LOGN:UInt = 11;				// Log2 FFT length
-	private static var N:UInt = 1 << LOGN;			// FFT Length
-	private static var BUF_LEN:UInt = N;				// Length of buffer for mic audio
-	
-	
 	public static inline var MIN_VALUE = untyped __global__ ["Number"].MIN_VALUE;
-	
+
 	public function new () : Void {
 		super();
 		heights = new ByteArray();
@@ -38,7 +32,7 @@ class FFTWorld extends World {
 
 		var SCALE = 20/Math.log(10);
 
-		for (i in 0 ... Std.int(N)) {
+		for (i in 0 ... Pitch.NUM_SAMPLES) {
 			var intensity = SCALE * Math.log(fft[i]+MIN_VALUE) + 60;
 			if (intensity < 0)
 				intensity = 0;
@@ -52,11 +46,15 @@ class FFTWorld extends World {
 		}
 
 		var pitch = Pitch.getPitch();
-		Draw.line(pitch*2 + 64, 200, pitch*2+64, 250, 0xFF0000);
 
 		pitches.push(pitch);
 		if (pitches.length > 15)
 			pitches.shift();
+
+		for (i in 0 ... pitches.length) {
+			var x = pitches[i] * 2 + 64;
+			Draw.line(x, 200, x, 250, 0x110000 * i);
+		}
 
 		Draw.line(300, 400, 300, Std.int(400 - G.mic.activityLevel), 0xFFFFFFFF);
 	}

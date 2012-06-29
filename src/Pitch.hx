@@ -21,6 +21,7 @@ class Pitch {
 	private static var LOGN:UInt = 11;				// Log2 FFT length
 	private static var N:UInt = 1 << LOGN;			// FFT Length
 	private static var BUF_LEN:UInt = N;				// Length of buffer for mic audio
+	public static var NUM_SAMPLES:Int = N;
 	
 	
 	public static inline var MIN_VALUE = untyped __global__ ["Number"].MIN_VALUE;
@@ -116,5 +117,3 @@ class Pitch {
 		needFft = true;
         }
 }
-
-
