@@ -28,21 +28,30 @@ class FFTWorld extends World {
 	override public function render () : Void {
 		super.render();
 
+		var mini = Std.int(intensity(0.004));
+		Draw.line(64, 250+mini, 1000, 250+mini, 0x00FF00);
+
+		for (x in [Paddle.maxIgnoredPitch,
+		           Paddle.minPitch,
+		           Paddle.maxPitch])
+		{
+			Draw.line(Std.int(x + 64), 150, Std.int(x + 64), 300,
+			          0x00FF00);
+		}
+
 		var fft = Pitch.getFFT();
 		var correl = Pitch.getCorrelation();
 
 		for (i in 0 ... Pitch.NUM_SAMPLES) {
 			var height = Std.int(intensity(fft[i]));
-			var x = 2*i + 64;
+			var x = i + 64;
 			var y = 200;
 
 			Draw.line(x, y, x, y-height, 0xFFFFFF);
-			Draw.line(x+1, y, x+1, y-height, 0xFFFFFF);
 
 			height = Std.int(intensity(correl[i]));
 			y = 250;
 			Draw.line(x, y, x, y+height, 0xFFFFFF);
-			Draw.line(x+1, y, x+1, y+height, 0xFFFFFF);
 		}
 
 		var pitch = Pitch.getPitch();
@@ -52,7 +61,7 @@ class FFTWorld extends World {
 			pitches.shift();
 
 		for (i in 0 ... pitches.length) {
-			var x = pitches[i] * 2 + 64;
+			var x = pitches[i] + 64;
 			Draw.line(x, 200, x, 250, 0x110000 * i);
 		}
 

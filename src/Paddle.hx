@@ -12,6 +12,10 @@ enum InputType {
 
 
 class Paddle extends Entity {
+	public static var maxIgnoredPitch:Float = 20.0;
+	public static var minPitch:Float = 40.0;
+	public static var maxPitch:Float = 60.0;
+
 	public var vel:Float;
 	public var pitch:Float;
 	
@@ -49,10 +53,7 @@ class Paddle extends Entity {
 			right = bw.right;
 		}
 
-		var minPitch = 40.0;
-		var maxPitch = 60.0;
-		
-		if (pitch > 20) {
+		if (pitch > maxIgnoredPitch) {
 			if (pitch < minPitch) pitch = minPitch;
 			if (pitch > maxPitch) pitch = maxPitch;
 		
