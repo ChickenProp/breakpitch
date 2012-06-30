@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<app title="HaxePunk" main="Main" file="breakpitch"
+	<app title="HaxePunk" main="Main" file="arkanoise"
 		package="com.example.app" version="1.0.0" company="HaxePunk" />
 	<window width="640" height="480" fps="30"
 		orientation="portrait" resizable="true" />
