@@ -19,7 +19,7 @@ class Paddle extends Entity {
 	public var vel:Float;
 	public var pitch:Float;
 	
-	public static inline var controls:InputType = PITCH_CONTROLS_POSITION;
+	public var controls:InputType;
 
 	public function new () {
 		super();
@@ -33,6 +33,8 @@ class Paddle extends Entity {
 
 		vel = 0;
 		pitch = 0;
+
+		controls = PITCH_CONTROLS_DIRECTION;
 	}
 
 	override public function update () : Void {
@@ -41,6 +43,15 @@ class Paddle extends Entity {
 				- (if (Input.check(Key.LEFT)) 1 else 0);
 
 			vel += 3 * dx;
+
+			if (Input.pressed(Key.I)) {
+				if (controls == PITCH_CONTROLS_POSITION) {
+					controls = PITCH_CONTROLS_DIRECTION;
+					y = HXP.height - 50;
+				}
+				else
+					controls = PITCH_CONTROLS_POSITION;
+			}
 		}
 		
 		var oldPitch = pitch;
@@ -88,7 +99,9 @@ class Paddle extends Entity {
 				ball.launch();
 		} else {
 			pitch = oldPitch * 0.8;
-			y += (HXP.height + 50 - y) * 0.2;
+
+			if (controls == PITCH_CONTROLS_POSITION)
+				y += (HXP.height + 50 - y) * 0.2;
 		}
 		
 		width = Std.int(150 + 0.5 * G.mic.activityLevel);
