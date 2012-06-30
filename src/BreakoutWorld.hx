@@ -32,21 +32,24 @@ class BreakoutWorld extends World {
 	override public function update () : Void {
 		super.update();
 
-		// reset doesn't reset properly if we're not on a fixed level,
-		// but we probably won't have any of these in release.
-		if (Input.check(Key.R))
-			HXP.world = new BreakoutWorld(level);
-		if (Input.pressed(Key.UP)) {
-			HXP.world = new BreakoutWorld(level + 1);
-		}
-		if (Input.pressed(Key.DOWN))
-			HXP.world = new BreakoutWorld(level - 1);
+		if (Main.debugMode) {
+			// Reset doesn't reset properly if we're not on a fixed
+			// level (i.e. one with a specified seed). Oh well.
+			if (Input.check(Key.R))
+				HXP.world = new BreakoutWorld(level);
+			if (Input.pressed(Key.UP))
+				HXP.world = new BreakoutWorld(level + 1);
+			if (Input.pressed(Key.DOWN))
+				HXP.world = new BreakoutWorld(level - 1);
+			if (Input.pressed(Key.F))
+				HXP.world = new FFTWorld();
 
-		if (Input.pressed(Key.F6)) {
-			var bricks = [];
-			getClass(Brick, bricks);
-			for (b in bricks)
-				cast(b, Brick).hit();
+			if (Input.pressed(Key.F6)) {
+				var bricks = [];
+				getClass(Brick, bricks);
+				for (b in bricks)
+					cast(b, Brick).hit();
+			}
 		}
 
 		var bricks = [];

@@ -36,10 +36,12 @@ class Paddle extends Entity {
 	}
 
 	override public function update () : Void {
-		var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
-			- (if (Input.check(Key.LEFT)) 1 else 0);
+		if (Main.debugMode) {
+			var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
+				- (if (Input.check(Key.LEFT)) 1 else 0);
 
-		vel += 3 * dx;
+			vel += 3 * dx;
+		}
 		
 		var oldPitch = pitch;
 		pitch = Pitch.getPitch();

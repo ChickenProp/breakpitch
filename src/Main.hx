@@ -14,6 +14,8 @@ class Main extends Engine
 	public static inline var kClearColor:Int = 0x333333;
 	public static inline var kProjectName:String = "HaxePunk";
 
+	public static var debugMode:Bool = false;
+
 	public function new()
 	{
 		super(kScreenWidth, kScreenHeight, kFrameRate, false);
@@ -52,6 +54,9 @@ class Main extends Engine
 		super.update();
 		
 		Audio.update();
+
+		if (Input.check(Key.F1))
+			debugMode = true;
 
 		if (Input.check(Key.F5))
 			HXP.console.enable();
