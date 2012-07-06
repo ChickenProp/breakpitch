@@ -1,5 +1,9 @@
 import flash.media.Microphone;
 import com.haxepunk.utils.Data;
+import com.haxepunk.HXP;
+import com.haxepunk.graphics.Emitter;
+import com.haxepunk.graphics.Image;
+import flash.display.BitmapData;
 
 class G {
 	public static var score(getScore, setScore):Int;
@@ -7,12 +11,22 @@ class G {
 
 	public static var mic:Microphone;
 
+	public static var particleImage:BitmapData;
+	public static var emitter:Emitter;
+
 	public static function init () : Void {
 		mic = Microphone.getMicrophone();
 
 		Data.id = "philh-arkanoise";
 		Data.load();
 		_hiscore = Data.readInt("hiscore");
+
+		particleImage = HXP.createBitmap(2, 2, false, 0xFFFFFF);
+		emitter = new Emitter(particleImage);
+		emitter.newType("block");
+		emitter.setGravity("block", 2);
+		emitter.setColor("block", 0x000000, 0x000000);
+		emitter.setAlpha("block", 0.5, 0);
 	}
 
 	static var _score:Int = 0;

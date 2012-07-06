@@ -27,6 +27,8 @@ class BreakoutWorld extends World {
 		ballsLeft = 3;
 
 		seeds = [8, 10, 4, 5, 6, 7, 9, 26, 11, 14];
+
+		addGraphic(G.emitter).layer = HXP.BASELAYER - 1;
 	}
 
 	override public function update () : Void {
