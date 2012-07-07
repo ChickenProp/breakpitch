@@ -24,9 +24,10 @@ class G {
 		particleImage = HXP.createBitmap(2, 2, false, 0xFFFFFF);
 		emitter = new Emitter(particleImage);
 		emitter.newType("block");
-		emitter.setGravity("block", 2);
+		emitter.setGravity("block", 1);
 		emitter.setColor("block", 0x000000, 0x000000);
-		emitter.setAlpha("block", 0.5, 0);
+		emitter.setAlpha("block", 1, 0);
+		emitter.setMotion("block", 0, 40, 1, 30, 10, 0.1);
 	}
 
 	static var _score:Int = 0;

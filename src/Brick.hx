@@ -4,6 +4,7 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.utils.Draw;
 
 class Brick extends Entity {
+	public var color:Int;
 	public function new (x:Float, y:Float, color:Int) {
 		super();
 		this.x = x;
@@ -15,6 +16,7 @@ class Brick extends Entity {
 		type = "solid";
 
 		var image = new Image("gfx/brick.png");
+		this.color = color;
 		image.color = color;
 		image.centerOO();
 		
@@ -31,12 +33,13 @@ class Brick extends Entity {
 		var score = 10 * ball.combo;
 		G.score += score;
 		world.add(new TextParticle(Std.string(score), x, y,
-		                           ball.vel.x/10, ball.vel.y/10, 0.3));
+		                           ball.vel.x/10, ball.vel.y/10, 1.2));
 
-		// Positive y velocity is going down, we need it to be up.
-		var angle = Math.atan2(-ball.vel.y, ball.vel.x) * 180 / Math.PI;
-		G.emitter.setMotion("block", angle, 40, 1, 30, 10, 0.1);
+		var pt = G.emitter.getParticleType("block").copy();
+		var angle = Math.atan2(ball.vel.y, ball.vel.x);
+		pt._angle = angle - pt._angleRange / 2;
+		pt.setColor(color, color);
 		for (i in 0...100)
-			G.emitter.emitInRectangle("block", left, top, width, height);
+			G.emitter.emitInRectangle(pt, left, top, width, height);
 	}
 }

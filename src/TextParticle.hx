@@ -20,6 +20,7 @@ class TextParticle extends Entity {
 		image.centerOO();
 		image.color = 0x000000;
 		graphic = image;
+		layer -= 2; // Appear on top of other particles, which are -1.
 
 		// We can't tween image.alpha because it uses a getter/setter,
 		// so we have to use our own property instead.

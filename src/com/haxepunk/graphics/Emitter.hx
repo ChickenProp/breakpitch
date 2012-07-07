@@ -236,17 +236,29 @@ class Emitter extends Graphic
 		return pt.setColor(start, finish, ease);
 	}
 
+	public function getParticleType (type:Dynamic) : ParticleType {
+		if (Std.is(type, ParticleType) && type != null)
+			return type;
+		else if (Std.is(type, String))
+			return _types.get(type);
+		else
+			return null;
+	}
+
 	/**
 	 * Emits a particle.
-	 * @param	name		Particle type to emit.
+	 * @param	type		Particle type to emit.
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
 	 * @return
 	 */
-	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
+	public function emit(type:Dynamic, ?x:Float = 0, ?y:Float = 0):Particle
 	{
-		var p:Particle, type:ParticleType = _types.get(name);
-		if (type == null) throw "Particle type \"" + name + "\" does not exist.";
+		var p:Particle;
+
+		var ptype = getParticleType(type);
+		if (ptype == null)
+			throw Std.format("$type is not a particle type.");
 
 		if (_cache != null)
 		{
@@ -261,45 +273,45 @@ class Emitter extends Graphic
 		p._prev = null;
 		if (p._next != null) p._next._prev = p;
 
-		p._type = type;
+		p._type = ptype;
 		p._time = 0;
-		p._duration = type._duration + type._durationRange * HXP.random;
-		var a:Float = type._angle + type._angleRange * HXP.random,
-			d:Float = type._distance + type._distanceRange * HXP.random;
+		p._duration = ptype._duration + ptype._durationRange * HXP.random;
+		var a:Float = ptype._angle + ptype._angleRange * HXP.random,
+			d:Float = ptype._distance + ptype._distanceRange * HXP.random;
 		p._moveX = Math.cos(a) * d;
 		p._moveY = Math.sin(a) * d;
 		p._x = x;
 		p._y = y;
-		p._gravity = type._gravity + type._gravityRange * HXP.random;
+		p._gravity = ptype._gravity + ptype._gravityRange * HXP.random;
 		particleCount ++;
 		return (_particle = p);
 	}
 
 	/**
 	 * Randomly emits the particle inside the specified radius
-	 * @param	name		Particle type to emit.
+	 * @param	type		Particle type to emit.
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
 	 * @param	radius
 	 */
-	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle
+	public function emitInCircle(type:Dynamic, x:Float, y:Float, radius:Float):Particle
 	{
 		var angle = Math.random() * Math.PI * 2;
 		radius *= Math.random();
-		return emit(name, x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+		return emit(type, x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
 	}
 
 	/**
 	 * Randomly emits the particle inside the specified area
-	 * @param	name		Particle type to emit
+	 * @param	type		Particle type to emit
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
 	 * @param	width
 	 * @param	height
 	 */
-	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle
+	public function emitInRectangle(type:Dynamic, x:Float, y:Float, width:Float ,height:Float):Particle
 	{
-		return emit(name, x + HXP.random * width, y + HXP.random * height);
+		return emit(type, x + HXP.random * width, y + HXP.random * height);
 	}
 
 	/**

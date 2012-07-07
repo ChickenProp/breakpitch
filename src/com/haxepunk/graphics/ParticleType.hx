@@ -42,6 +42,34 @@ class ParticleType
         _redRange = _greenRange = _blueRange = 0;
 	}
 
+	public function copy () : ParticleType {
+		var pt = new ParticleType(_name, _frames, _source, Std.int(_frame.width), Std.int(_frame.height));
+
+		pt.setMotion(_angle, _distance, _duration, _angleRange,
+		             _distanceRange, _durationRange, _ease);
+		pt.setGravity(_gravity, _gravityRange);
+
+		// If buffer hasn't been set, then neither have color or
+		// alpha. In that case we don't want to call setColor or
+		// setAlpha, because that will create the buffer in the copy.
+		if (_buffer == null)
+			return pt;
+
+		// This is easier than reconstructing the color for setColor.
+		pt._red = _red;
+		pt._green = _green;
+		pt._blue = _blue;
+		pt._redRange = _redRange;
+		pt._greenRange = _greenRange;
+		pt._blueRange = _blueRange;
+		pt._colorEase = _colorEase;
+
+		// This calls createBuffer at the end.
+		pt.setAlpha(_alpha, _alpha + _alphaRange, _alphaEase);
+
+		return pt;
+	}
+
 	/**
 	 * Defines the motion range for this particle type.
 	 * @param	angle			Launch Direction.
