@@ -8,6 +8,7 @@ import com.haxepunk.utils.Key;
 enum InputType {
 	PITCH_CONTROLS_DIRECTION;
 	PITCH_CONTROLS_POSITION;
+	KEYBOARD;
 }
 
 
@@ -38,20 +39,14 @@ class Paddle extends Entity {
 	}
 
 	override public function update () : Void {
-		if (Main.debugMode) {
-			var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
-				- (if (Input.check(Key.LEFT)) 1 else 0);
-
-			vel += 3 * dx;
-
-			if (Input.pressed(Key.I)) {
-				if (controls == PITCH_CONTROLS_POSITION) {
-					controls = PITCH_CONTROLS_DIRECTION;
-					y = HXP.height - 50;
-				}
-				else
-					controls = PITCH_CONTROLS_POSITION;
-			}
+		if (Main.debugMode && Input.pressed(Key.I)) {
+			y = HXP.height - 50;
+			if (controls == PITCH_CONTROLS_DIRECTION)
+				controls = PITCH_CONTROLS_POSITION;
+			else if (controls == PITCH_CONTROLS_POSITION)
+				controls = KEYBOARD;
+			else
+				controls = PITCH_CONTROLS_DIRECTION;
 		}
 		
 		var oldPitch = pitch;
@@ -66,7 +61,7 @@ class Paddle extends Entity {
 			right = bw.right;
 		}
 
-		if (pitch > maxIgnoredPitch) {
+		if (controls != KEYBOARD && pitch > maxIgnoredPitch) {
 			if (pitch < minPitch) pitch = minPitch;
 			if (pitch > maxPitch) pitch = maxPitch;
 		
@@ -97,13 +92,26 @@ class Paddle extends Entity {
 			var ball = cast(world.typeFirst("ball"), Ball);
 			if (ball != null)
 				ball.launch();
-		} else {
+		}
+		else if (controls != KEYBOARD) {
 			pitch = oldPitch * 0.8;
 
 			if (controls == PITCH_CONTROLS_POSITION)
 				y += (HXP.height + 50 - y) * 0.2;
 		}
-		
+		else {
+			var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
+				- (if (Input.check(Key.LEFT)) 1 else 0);
+
+			vel += 3 * dx;
+			vel *= 0.8;
+			x += vel;
+
+			var ball = cast(world.typeFirst("ball"), Ball);
+			if (ball != null && Input.pressed(Key.SPACE))
+				ball.launch();
+		}
+
 		width = Std.int(150 + 0.5 * G.mic.activityLevel);
 
 		if (x - halfWidth < left) {
