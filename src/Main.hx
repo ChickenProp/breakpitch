@@ -60,6 +60,9 @@ class Main extends Engine
 
 		if (Input.check(Key.F5))
 			HXP.console.enable();
+
+		if (Input.pressed(Key.P))
+			HXP.world.active = ! HXP.world.active;
 	}
 
 	public static function main()
