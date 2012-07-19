@@ -47,6 +47,8 @@ class ParticleType
 
 		pt.setMotion(_angle, _distance, _duration, _angleRange,
 		             _distanceRange, _durationRange, _ease);
+		pt._angle = _angle; // setMotion() does degree -> radian
+		pt._angleRange = _angleRange; // conversion on these.
 		pt.setGravity(_gravity, _gravityRange);
 
 		// If buffer hasn't been set, then neither have color or
