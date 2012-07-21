@@ -188,7 +188,7 @@ class Draw
 	{
 		if (alpha >= 1 && blend == null)
 		{
-			if (color < 0xFF000000) color = 0xFF000000 | color;
+			color = 0xFF000000 | color;
 			_rect.x = x - _camera.x;
 			_rect.y = y - _camera.y;
 			_rect.width = width;
@@ -196,7 +196,7 @@ class Draw
 			_target.fillRect(_rect, HXP.convertColor(color));
 			return;
 		}
-		if (color >= 0xFF000000) color = 0xFFFFFF & color;
+		color = 0xFFFFFF & color;
 		_graphics.clear();
 		_graphics.beginFill(color, alpha);
 		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);

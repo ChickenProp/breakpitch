@@ -3,6 +3,8 @@ import com.haxepunk.utils.Draw;
 import com.haxepunk.HXP;
 import nme.geom.Point;
 
+// Note that the Ball doesn't draw itself, for reasons explained in
+// BreakoutWorld.
 class Ball extends Entity {
 	public var vel:Point;
 	var radius:Int;
@@ -18,7 +20,6 @@ class Ball extends Entity {
 		y = HXP.height / 2;
 		width = 10;
 		height = 10;
-		scale = 1;
 		centerOrigin();
 		type = "ball";
 
@@ -38,12 +39,12 @@ class Ball extends Entity {
 		if (x + halfWidth > bw.right) {
 			x = bw.right - halfWidth;
 			vel.x = - Math.abs(vel.x);
-			bounceSize();
+			bounceSound();
 		}
 		else if (x - halfWidth < bw.left) {
 			x = bw.left + halfWidth;
 			vel.x = Math.abs(vel.x);
-			bounceSize();
+			bounceSound();
 		}
 
 		if (y + halfHeight > bw.bottom) {
@@ -52,7 +53,7 @@ class Ball extends Entity {
 		else if (y - halfHeight < bw.top) {
 			y = bw.top + halfHeight;
 			vel.y = Math.abs(vel.y);
-			bounceSize();
+			bounceSound();
 		}
 		
 		var maxVY = 10;
@@ -75,22 +76,11 @@ class Ball extends Entity {
 		launched = true;
 	}
 
-	override public function render () : Void {
-		super.render();
-
-		Draw.rect(Std.int(x - halfWidth*scale),
-		          Std.int(y - halfHeight*scale),
-		          Std.int(width * scale), Std.int(height * scale),
-		          0xFF0000);
-	}
-
 	override public function moveCollideX (e) : Void {
-		bounceSize();
-
 		if (Std.is(e, Brick))
 			hitBrick(e);
 		else
-			Audio.play("bounce");
+			bounceSound();
 		
 		if (Std.is(e, Paddle))
 			if (vel.y > 0) vel.y = -vel.y;
@@ -99,10 +89,9 @@ class Ball extends Entity {
 	}
 
 	override public function moveCollideY (e:Entity) : Void {
-		bounceSize();
 		if (Std.is(e, Paddle)) {
 			hitPaddle(e);
-			Audio.play("bounce");
+			bounceSound();
 		} else {
 			hitBrick(e);
 			vel.y = -vel.y;
@@ -140,14 +129,7 @@ class Ball extends Entity {
 		Audio.play("brick");
 	}
 
-	public function bounceSize () : Void {
-		var ease = function (t) {
-			return 0.5 * (Math.cos(x * 2 * Math.PI) - 1);
-		}
-
-		scale = 1.2;
-		HXP.tween(this, {scale: 1.0}, 0.2, { ease: ease });
-		
+	public function bounceSound () : Void {
 		Audio.play("bounce");
 	}
 }

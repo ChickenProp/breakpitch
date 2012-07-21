@@ -143,12 +143,26 @@ class BreakoutWorld extends World {
 
 		super.render();
 
+		// The particles and the ball leave a trail behind. We do this
+		// by drawing them onto a seperate buffer which gets partially
+		// erased every frame, and copying the buffer onto the
+		// screen. We want particles to be on top of other stuff, so
+		// this gets called after drawing everything else. But the ball
+		// isn't the same colour as its trail, so we draw it twice, once
+		// onto the blur buffer and once onto the real thing; that one
+		// has to happen after copying the blur buffer. Since Ball
+		// doesn't know about the blur buffer, we have to do all the
+		// rendering for it here instead of in the Ball class.
 		blurBuffer.colorTransform(blurBuffer.rect, colorTransform);
 		Draw.setTarget(blurBuffer, bbOffset);
 		MyParticle.renderAll();
-		Draw.resetTarget();
+		Draw.rect(Std.int(ball.left), Std.int(ball.top),
+		          ball.width, ball.height, 0xFF8080);
 		HXP.buffer.copyPixels(blurBuffer, blurBuffer.rect, bbOffset,
 		                      null, null, true);
+		Draw.resetTarget();
+		Draw.rect(Std.int(ball.left), Std.int(ball.top),
+		          ball.width, ball.height, 0xFF0000);
 	}
 
 	// Each level is horizontally and vertically symmetric. Each row has
