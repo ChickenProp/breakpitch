@@ -10,6 +10,7 @@ class MyParticle {
 	public var vx:Float;
 	public var vy:Float;
 	public var color:Int;
+	public var value:Int;
 	public var dead:Bool;
 
 	public var recycleNext:MyParticle;
@@ -25,9 +26,12 @@ class MyParticle {
 
 		// Todo: replace with collision check that avoids tunelling.
 		if (G.paddle.collidePoint(G.paddle.x, G.paddle.y, x, y)) {
-			G.score += 1;
+			G.score += value;
+			value++;
 			vy = - Math.abs(vy) * 0.5;
 			y = G.paddle.top;
+			if (value > 5)
+				recycle();
 		}
 
 		if (oldy > HXP.height)
@@ -62,6 +66,7 @@ class MyParticle {
 		p.vx = vx;
 		p.vy = vy;
 		p.color = color;
+		p.value = 1;
 		p.dead = false;
 
 		particles.push(p);
