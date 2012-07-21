@@ -27,7 +27,6 @@ class MyParticle {
 		if (G.paddle.collidePoint(G.paddle.x, G.paddle.y, x, y)) {
 			G.score += 1;
 			vy = - Math.abs(vy) * 0.5;
-			oldy = y;
 			y = G.paddle.top;
 		}
 
