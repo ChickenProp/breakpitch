@@ -35,11 +35,15 @@ class Brick extends Entity {
 		world.add(new TextParticle(Std.string(score), x, y,
 		                           ball.vel.x/10, ball.vel.y/10, 1.2));
 
+		/*
 		var pt = G.emitter.getParticleType("block").copy();
 		var angle = Math.atan2(ball.vel.y, ball.vel.x);
 		pt._angle = angle - pt._angleRange / 2;
 		pt.setColor(color, color);
 		for (i in 0...100)
 			G.emitter.emitInRectangle(pt, left, top, width, height);
+		*/
+
+		MyParticle.add(x, y, ball.vel.x, ball.vel.y, color);
 	}
 }

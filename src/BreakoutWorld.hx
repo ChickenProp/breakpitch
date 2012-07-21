@@ -3,6 +3,8 @@ import com.haxepunk.HXP;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
+import nme.display.BitmapData;
+import nme.geom.ColorTransform;
 using Lambda;
 
 class BreakoutWorld extends World {
@@ -29,6 +31,9 @@ class BreakoutWorld extends World {
 		seeds = [8, 10, 4, 5, 6, 7, 9, 26, 11, 14];
 
 		addGraphic(G.emitter).layer = HXP.BASELAYER - 1;
+
+		blurBuffer = new BitmapData(HXP.width, HXP.height, true, 0x00000000);
+		colorTransform = new ColorTransform(1, 1, 1, 0.8);
 	}
 
 	override public function update () : Void {
@@ -67,6 +72,8 @@ class BreakoutWorld extends World {
 			if (ballsLeft == 0)
 				HXP.world = new BreakoutWorld(0);
 		}
+
+		MyParticle.updateAll();
 	}
 
 	public function win () : Void {
@@ -93,7 +100,7 @@ class BreakoutWorld extends World {
 	override public function begin () : Void {
 		G.score = 0;
 		add(new ScoreDisplay());
-		paddle = new Paddle();
+		paddle = G.paddle = new Paddle();
 		add(paddle);
 		placeBall();
 
@@ -115,6 +122,8 @@ class BreakoutWorld extends World {
 		add(ball);
 	}
 
+	var blurBuffer:BitmapData;
+	var colorTransform:ColorTransform;
 	override public function render () : Void {
 		Draw.rect(Std.int( (HXP.width - width)/2 ),
 		          HXP.height - height,
@@ -126,6 +135,13 @@ class BreakoutWorld extends World {
 		}
 
 		super.render();
+
+		blurBuffer.colorTransform(blurBuffer.rect, colorTransform);
+		Draw.setTarget(blurBuffer);
+		MyParticle.particles.map(function (p) { p.render(); });
+		Draw.resetTarget();
+		HXP.buffer.copyPixels(blurBuffer, blurBuffer.rect, HXP.zero,
+		                      null, null, true);
 	}
 
 	// Each level is horizontally and vertically symmetric. Each row has

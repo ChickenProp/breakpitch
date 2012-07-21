@@ -14,6 +14,8 @@ class G {
 	public static var particleImage:BitmapData;
 	public static var emitter:Emitter;
 
+	public static var paddle:Paddle;
+
 	public static function init () : Void {
 		mic = Microphone.getMicrophone();
 

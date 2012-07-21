@@ -68,7 +68,7 @@ class Draw
 	 */
 	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF)
 	{
-		if (color < 0xFF000000) color = 0xFF000000 | color;
+		color = 0xFF000000 | color;
 
 		// get the drawing difference
 		var screen:BitmapData = _target,
