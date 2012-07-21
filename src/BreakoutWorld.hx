@@ -5,6 +5,7 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import nme.display.BitmapData;
 import nme.geom.ColorTransform;
+import nme.geom.Point;
 using Lambda;
 
 class BreakoutWorld extends World {
@@ -32,8 +33,13 @@ class BreakoutWorld extends World {
 
 		addGraphic(G.emitter).layer = HXP.BASELAYER - 1;
 
-		blurBuffer = new BitmapData(HXP.width, HXP.height, true, 0x00000000);
+		// Draw.line draws on the edges of the buffer if it's supposed
+		// to be offscreen, so we make it large enough that we can't see
+		// stuff drawn on the edges.
+		blurBuffer = new BitmapData(HXP.width + 20, HXP.height + 20,
+		                            true, 0x00000000);
 		colorTransform = new ColorTransform(1, 1, 1, 0.8);
+		bbOffset = new Point(-10, -10);
 	}
 
 	override public function update () : Void {
@@ -124,6 +130,7 @@ class BreakoutWorld extends World {
 
 	var blurBuffer:BitmapData;
 	var colorTransform:ColorTransform;
+	var bbOffset:Point;
 	override public function render () : Void {
 		Draw.rect(Std.int( (HXP.width - width)/2 ),
 		          HXP.height - height,
@@ -140,7 +147,7 @@ class BreakoutWorld extends World {
 		Draw.setTarget(blurBuffer);
 		MyParticle.particles.map(function (p) { p.render(); });
 		Draw.resetTarget();
-		HXP.buffer.copyPixels(blurBuffer, blurBuffer.rect, HXP.zero,
+		HXP.buffer.copyPixels(blurBuffer, blurBuffer.rect, bbOffset,
 		                      null, null, true);
 	}
 
