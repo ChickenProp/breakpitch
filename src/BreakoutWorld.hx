@@ -145,7 +145,7 @@ class BreakoutWorld extends World {
 
 		blurBuffer.colorTransform(blurBuffer.rect, colorTransform);
 		Draw.setTarget(blurBuffer);
-		MyParticle.particles.map(function (p) { p.render(); });
+		MyParticle.renderAll();
 		Draw.resetTarget();
 		HXP.buffer.copyPixels(blurBuffer, blurBuffer.rect, bbOffset,
 		                      null, null, true);

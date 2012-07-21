@@ -16,7 +16,7 @@ class MyParticle {
 
 	public function new () {}
 
-	public function update () : Void {
+	inline public function update () : Void {
 		oldx = x;
 		oldy = y;
 		x += vx;
@@ -35,7 +35,7 @@ class MyParticle {
 			recycle();
 	}
 
-	public function render () : Void {
+	inline public function render () : Void {
 		Draw.line(Std.int(oldx), Std.int(oldy), Std.int(x), Std.int(y), color);
 	}
 
@@ -69,7 +69,16 @@ class MyParticle {
 	}
 
 	public static function updateAll () : Void {
-		particles.map(function (p) { p.update(); });
+		// We don't use a map() here or in renderAll() because
+		// presumably that couldn't be inlined.
+		for (i in 0...particles.length)
+			particles[i].update();
+
 		particles = particles.filter(function (p) { return !p.dead; }).array();
+	}
+
+	public static function renderAll () : Void {
+		for (i in 0...particles.length)
+			particles[i].render();
 	}
 }
