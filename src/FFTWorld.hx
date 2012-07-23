@@ -1,9 +1,11 @@
+import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.World;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.Text;
 import flash.media.SoundMixer;
 import flash.utils.ByteArray;
 import flash.events.SampleDataEvent;
@@ -18,6 +20,8 @@ class FFTWorld extends World {
 
 	public static inline var MIN_VALUE = untyped __global__ ["Number"].MIN_VALUE;
 
+	private var text:Text;
+
 	public function new () : Void {
 		super();
 		heights = new ByteArray();
@@ -25,6 +29,10 @@ class FFTWorld extends World {
 
 		player = new Paddle();
 		add(player);
+
+		text = new Text("", 250, 350, 200, 25,
+		                {size: 24, color: 0xFFFFFF});
+		addGraphic(text);
 	}
 
 	override public function render () : Void {
@@ -78,11 +86,13 @@ class FFTWorld extends World {
 	}
 
 	override public function update () : Void {
+		super.update();
 		if (Input.pressed(Key.SPACE))
 			printPitch();
 	}
 
 	function printPitch () : Void {
-		trace(Pitch.getPitch());
+		var p = Std.int(Pitch.getPitch() * 2.45);
+		text.text = Std.format("$p kHz");
 	}
 }
