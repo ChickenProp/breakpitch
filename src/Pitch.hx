@@ -6,9 +6,11 @@ import flash.Vector;
 class Pitch {
 	private static var needFFT:Bool;
 	private static var needIFFT:Bool;
+	private static var needMax:Bool;
 
 	private static var fft:FFT2;
 	private static var ifft:FFT2;
+	private static var maxIFFTVal:Float;
 	
 	private static var real:Vector<Float>;
 	private static var real2:Vector<Float>;
@@ -96,18 +98,36 @@ class Pitch {
 		ifft.run(real2, imaginary, true);
 
 		needIFFT = false;
+		needMax = true;
+	}
+
+	public static function runMax () : Void {
+		runCorrelation();
+		if (! needMax)
+			return;
+
+		maxIFFTVal = 0.0;
+		for (i in 10 ... Std.int(N/2))
+			if (real2[i] > maxIFFTVal)
+				maxIFFTVal = real2[i];
+
+		needMax = false;
 	}
 
 	public static function getPitch (): Int
 	{
 		runFFT();
 		runCorrelation();
+		runMax();
 
-		for (i in 10 ... Std.int(N/2)) {
-			if (real2[i] > 0.004) return i;
-		}
-		
-		return 0;
+		if (maxIFFTVal < 0.004)
+			return 0;
+
+		for (i in 10 ... Std.int(N/2))
+			if (real2[i] > maxIFFTVal/4)
+				return i;
+
+		return 0; // Compiler needs this.
 	}
 
 	public static function getFFT () : Vector<Float> {
@@ -118,6 +138,11 @@ class Pitch {
 	public static function getCorrelation () : Vector<Float> {
 		runCorrelation();
 		return real2;
+	}
+
+	public static function getMaxIFFTVal () : Float {
+		runMax();
+		return maxIFFTVal;
 	}
 
 	private static function micSampleDataHandler(event:SampleDataEvent) : Void {

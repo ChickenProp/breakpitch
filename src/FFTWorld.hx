@@ -1,6 +1,8 @@
 import com.haxepunk.Entity;
 import com.haxepunk.World;
 import com.haxepunk.utils.Draw;
+import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Key;
 import com.haxepunk.graphics.Image;
 import flash.media.SoundMixer;
 import flash.utils.ByteArray;
@@ -28,9 +30,6 @@ class FFTWorld extends World {
 	override public function render () : Void {
 		super.render();
 
-		var mini = Std.int(intensity(0.004));
-		Draw.line(64, 250+mini, 1000, 250+mini, 0x00FF00);
-
 		for (x in [Paddle.maxIgnoredPitch,
 		           Paddle.minPitch,
 		           Paddle.maxPitch])
@@ -41,6 +40,10 @@ class FFTWorld extends World {
 
 		var fft = Pitch.getFFT();
 		var correl = Pitch.getCorrelation();
+		var max = Pitch.getMaxIFFTVal();
+
+		var mini = Std.int(intensity(max/4));
+		Draw.line(64, 250+mini, 1000, 250+mini, 0x00FF00);
 
 		for (i in 0 ... Pitch.NUM_SAMPLES) {
 			var height = Std.int(intensity(fft[i]));
@@ -72,5 +75,14 @@ class FFTWorld extends World {
 		var SCALE = 20/Math.log(10);
 		var intensity = SCALE * Math.log(x + MIN_VALUE) + 60;
 		return Math.max(intensity, 0);
+	}
+
+	override public function update () : Void {
+		if (Input.pressed(Key.SPACE))
+			printPitch();
+	}
+
+	function printPitch () : Void {
+		trace(Pitch.getPitch());
 	}
 }
