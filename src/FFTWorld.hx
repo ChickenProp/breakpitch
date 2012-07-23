@@ -45,7 +45,7 @@ class FFTWorld extends World {
 		var mini = Std.int(intensity(max/4));
 		Draw.line(64, 250+mini, 1000, 250+mini, 0x00FF00);
 
-		for (i in 0 ... Pitch.NUM_SAMPLES) {
+		for (i in 0 ... Std.int(Pitch.NUM_SAMPLES/2)) {
 			var height = Std.int(intensity(fft[i]));
 			var x = i + 64;
 			var y = 200;
