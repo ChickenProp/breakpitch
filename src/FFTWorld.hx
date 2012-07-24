@@ -38,13 +38,13 @@ class FFTWorld extends World {
 	override public function render () : Void {
 		super.render();
 
-		for (x in [Paddle.maxIgnoredPitch,
-		           Paddle.minPitch,
-		           Paddle.maxPitch])
-		{
-			Draw.line(Std.int(x + 64), 150, Std.int(x + 64), 300,
-			          0x00FF00);
+		var vertline = function (x, color) {
+			Draw.line(x + 64, 150, x+64, 300, color);
 		}
+		vertline(Paddle.maxIgnoredPitch, 0xFF0000);
+		vertline(Paddle.minPitch, 0x0000FF);
+		vertline(Paddle.maxPitch, 0x0000FF);
+		vertline(Paddle.medPitch, 0x00FF00);
 
 		var fft = Pitch.getFFT();
 		var correl = Pitch.getCorrelation();
@@ -89,6 +89,9 @@ class FFTWorld extends World {
 		super.update();
 		if (Input.pressed(Key.SPACE))
 			printPitch();
+
+		if (Input.check(Key.ENTER) && Pitch.getPitch() != 0)
+			player.calibrate(Pitch.getPitch());
 	}
 
 	function printPitch () : Void {

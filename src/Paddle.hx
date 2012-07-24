@@ -13,9 +13,10 @@ enum InputType {
 
 
 class Paddle extends Entity {
-	public static var maxIgnoredPitch:Float = 20.0;
-	public static var minPitch:Float = 40.0;
-	public static var maxPitch:Float = 60.0;
+	public static var maxIgnoredPitch:Int = 20;
+	public static var minPitch:Int = 56;
+	public static var maxPitch:Int = 113;
+	public static var medPitch:Int = 80;
 
 	public var vel:Float;
 	public var pitch:Float;
@@ -35,7 +36,7 @@ class Paddle extends Entity {
 		vel = 0;
 		pitch = 0;
 
-		controls = PITCH_CONTROLS_DIRECTION;
+		controls = PITCH_CONTROLS_POSITION;
 	}
 
 	override public function update () : Void {
@@ -64,11 +65,13 @@ class Paddle extends Entity {
 		if (controls != KEYBOARD && pitch > maxIgnoredPitch) {
 			if (pitch < minPitch) pitch = minPitch;
 			if (pitch > maxPitch) pitch = maxPitch;
-		
-			pitch -= (minPitch + maxPitch) * 0.5;
-			
-			pitch /= (maxPitch - minPitch) * 0.5;
-			
+
+			// rescale pitch to [-1, 1].
+			if (pitch < medPitch)
+				pitch = (1 - medPitch/pitch) / (Math.sqrt(2) - 1);
+			else
+				pitch = (pitch/medPitch - 1) / (Math.sqrt(2) - 1);
+
 			if (controls == PITCH_CONTROLS_POSITION) {
 				var target = (pitch * 0.5 + 0.5) * (right - left - width) + left + halfWidth;
 				
@@ -131,5 +134,11 @@ class Paddle extends Entity {
 		          width, height, 0x0000CC);
 		
 		Draw.rect(Std.int(x + pitch * (halfWidth-1) - 1), Std.int(y - halfHeight + 2), 2, height-4, 0xFFFFFF);
+	}
+
+	public function calibrate (pitch:Int) {
+		medPitch = pitch;
+		minPitch = Std.int(pitch / Math.sqrt(2));
+		maxPitch = Std.int(pitch * Math.sqrt(2));
 	}
 }
