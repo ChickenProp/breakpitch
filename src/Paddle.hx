@@ -3,6 +3,7 @@ import com.haxepunk.HXP;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
+import nme.geom.Point;
 
 
 enum InputType {
@@ -22,6 +23,7 @@ class Paddle extends Entity {
 	public var pitch:Float;
 	
 	public var controls:InputType;
+	public var recentering:Bool;
 
 	public function new () {
 		super();
@@ -37,6 +39,7 @@ class Paddle extends Entity {
 		pitch = 0;
 
 		controls = PITCH_CONTROLS_POSITION;
+		recentering = false;
 	}
 
 	override public function update () : Void {
@@ -74,10 +77,28 @@ class Paddle extends Entity {
 	}
 
 	public function doMotion () : Void {
-		if (controls == KEYBOARD)
+		if (recentering)
+			doRecentering();
+		else if (controls == KEYBOARD)
 			doMotionKeyboard();
 		else
 			doMotionMic();
+	}
+
+	public function doRecentering () : Void {
+		var p = new Point(HXP.width/2 - x, HXP.height - 50 - y);
+		if (p.length > 5)
+			p.normalize(5);
+		x += p.x;
+		y += p.y;
+
+		if (Math.abs(x - HXP.width/2) < 0.01
+		    && Math.abs(y - HXP.height + 50) < 0.01)
+		{
+			recentering = false;
+			active = false;
+			world.add(new Activator());
+		}
 	}
 
 	public function doMotionKeyboard () : Void {
@@ -158,5 +179,9 @@ class Paddle extends Entity {
 		medPitch = pitch;
 		minPitch = Std.int(pitch / Math.sqrt(2));
 		maxPitch = Std.int(pitch * Math.sqrt(2));
+	}
+
+	public function recenter () : Void {
+		recentering = true;
 	}
 }

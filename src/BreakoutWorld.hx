@@ -128,6 +128,7 @@ class BreakoutWorld extends World {
 		ball.x = paddle.x;
 		ball.y = paddle.y - paddle.halfHeight - ball.halfHeight;
 		add(ball);
+		paddle.recenter();
 	}
 
 	var blurBuffer:BitmapData;

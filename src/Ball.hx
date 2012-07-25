@@ -29,8 +29,11 @@ class Ball extends Entity {
 	}
 
 	override public function update () : Void {
-		if (!launched)
+		if (!launched) {
+			x = G.paddle.x;
+			y = G.paddle.y - G.paddle.halfHeight - halfHeight;
 			return;
+		}
 
 		moveBy(vel.x, vel.y, "solid");
 
