@@ -49,10 +49,11 @@ class Paddle extends Entity {
 			else
 				controls = PITCH_CONTROLS_DIRECTION;
 		}
-		
-		var oldPitch = pitch;
-		pitch = Pitch.getPitch();
-		
+
+		doMotion();
+
+		width = Std.int(150 + 0.5 * G.mic.activityLevel);
+
 		var left = 0.0;
 		var right = cast(HXP.width, Float);
 
@@ -62,61 +63,6 @@ class Paddle extends Entity {
 			right = bw.right;
 		}
 
-		if (controls != KEYBOARD && pitch > maxIgnoredPitch) {
-			if (pitch < minPitch) pitch = minPitch;
-			if (pitch > maxPitch) pitch = maxPitch;
-
-			// rescale pitch to [-1, 1].
-			if (pitch < medPitch)
-				pitch = (1 - medPitch/pitch) / (Math.sqrt(2) - 1);
-			else
-				pitch = (pitch/medPitch - 1) / (Math.sqrt(2) - 1);
-
-			if (controls == PITCH_CONTROLS_POSITION) {
-				var target = (pitch * 0.5 + 0.5) * (right - left - width) + left + halfWidth;
-				
-				vel = (target - x);
-				
-				x += vel * 0.5;
-				
-				y += (HXP.height - 20 - y) * 0.5;
-			} else {
-				vel += pitch * 40;
-				
-				var max = 20;
-		
-				if (vel < -max) vel = -max;
-				if (vel > max) vel = max;
-		
-				vel *= 0.8;
-				x += vel;
-			}
-
-			var ball = cast(world.typeFirst("ball"), Ball);
-			if (ball != null)
-				ball.launch();
-		}
-		else if (controls != KEYBOARD) {
-			pitch = oldPitch * 0.8;
-
-			if (controls == PITCH_CONTROLS_POSITION)
-				y += (HXP.height + 50 - y) * 0.2;
-		}
-		else {
-			var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
-				- (if (Input.check(Key.LEFT)) 1 else 0);
-
-			vel += 3 * dx;
-			vel *= 0.8;
-			x += vel;
-
-			var ball = cast(world.typeFirst("ball"), Ball);
-			if (ball != null && Input.pressed(Key.SPACE))
-				ball.launch();
-		}
-
-		width = Std.int(150 + 0.5 * G.mic.activityLevel);
-
 		if (x - halfWidth < left) {
 			x = left + halfWidth;
 			vel = 0.9 * Math.abs(vel);
@@ -125,6 +71,78 @@ class Paddle extends Entity {
 			x = right - halfWidth;
 			vel = -0.9 * Math.abs(vel);
 		}
+	}
+
+	public function doMotion () : Void {
+		if (controls == KEYBOARD)
+			doMotionKeyboard();
+		else
+			doMotionMic();
+	}
+
+	public function doMotionKeyboard () : Void {
+		var dx = (if (Input.check(Key.RIGHT)) 1 else 0)
+			- (if (Input.check(Key.LEFT)) 1 else 0);
+
+		vel += 3 * dx;
+		vel *= 0.8;
+		x += vel;
+
+		var ball = cast(world.typeFirst("ball"), Ball);
+		if (ball != null && Input.pressed(Key.SPACE))
+			ball.launch();
+	}
+
+	public function doMotionMic () : Void {
+		pitch = Pitch.getPitch();
+
+		if (pitch <= maxIgnoredPitch) {
+			if (controls == PITCH_CONTROLS_POSITION)
+				y += (HXP.height + 50 - y) * 0.2;
+			return;
+		}
+
+		if (pitch < minPitch) pitch = minPitch;
+		if (pitch > maxPitch) pitch = maxPitch;
+
+		// rescale pitch to [-1, 1].
+		if (pitch < medPitch)
+			pitch = (1 - medPitch/pitch) / (Math.sqrt(2) - 1);
+		else
+			pitch = (pitch/medPitch - 1) / (Math.sqrt(2) - 1);
+
+		if (controls == PITCH_CONTROLS_POSITION) {
+			var left = 0.0;
+			var right = cast(HXP.width, Float);
+
+			if (Std.is(world, BreakoutWorld)) {
+				var bw = cast(world, BreakoutWorld);
+				left = bw.left;
+				right = bw.right;
+			}
+
+			var target = (pitch * 0.5 + 0.5) * (right - left - width) + left + halfWidth;
+
+			vel = (target - x);
+
+			x += vel * 0.5;
+
+			y += (HXP.height - 20 - y) * 0.5;
+		} else {
+			vel += pitch * 40;
+
+			var max = 20;
+
+			if (vel < -max) vel = -max;
+			if (vel > max) vel = max;
+
+			vel *= 0.8;
+			x += vel;
+		}
+
+		var ball = cast(world.typeFirst("ball"), Ball);
+		if (ball != null)
+			ball.launch();
 	}
 
 	override public function render () : Void {
