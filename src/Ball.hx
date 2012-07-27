@@ -16,8 +16,10 @@ class Ball extends Entity {
 	public function new () {
 		super();
 
-		x = HXP.width / 2;
-		y = HXP.height / 2;
+		x = HXP.width / 2; // These are just in case G.paddle doesn't
+		y = HXP.height / 2; // exist, which shouldn't ever happen.
+		putOnPaddle();
+
 		width = 10;
 		height = 10;
 		centerOrigin();
@@ -30,8 +32,7 @@ class Ball extends Entity {
 
 	override public function update () : Void {
 		if (!launched) {
-			x = G.paddle.x;
-			y = G.paddle.y - G.paddle.halfHeight - halfHeight;
+			putOnPaddle();
 			return;
 		}
 
@@ -77,6 +78,14 @@ class Ball extends Entity {
 			vel.x = cast(world, BreakoutWorld).paddle.vel;
 		}
 		launched = true;
+	}
+
+	public function putOnPaddle () : Void {
+		if (G.paddle == null)
+			return;
+
+		x = G.paddle.x;
+		y = G.paddle.y - G.paddle.halfHeight - halfHeight;
 	}
 
 	override public function moveCollideX (e) : Void {

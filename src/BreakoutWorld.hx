@@ -107,9 +107,7 @@ class BreakoutWorld extends World {
 		G.score = 0;
 		add(new ScoreDisplay());
 		paddle = G.paddle = new Paddle();
-		paddle.active = false;
 		add(paddle);
-		add(new Activator());
 		placeBall();
 
 		var seed:Int = 0;
@@ -125,8 +123,6 @@ class BreakoutWorld extends World {
 
 	public function placeBall () : Void {
 		ball = new Ball();
-		ball.x = paddle.x;
-		ball.y = paddle.y - paddle.halfHeight - ball.halfHeight;
 		add(ball);
 		paddle.recenter();
 	}
