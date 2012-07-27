@@ -148,7 +148,7 @@ class Paddle extends Entity {
 
 			x += vel * 0.5;
 
-			y += (HXP.height - 20 - y) * 0.5;
+			y += (HXP.height - 50 - y) * 0.5;
 		} else {
 			vel += pitch * 40;
 
