@@ -22,6 +22,8 @@ class BreakoutWorld extends World {
 	public var ball:Ball;
 	public var ballsLeft:Int;
 
+	public var fadeAlpha:Float;
+
 	public function new (level:Int) {
 		super();
 		this.level = level;
@@ -72,11 +74,21 @@ class BreakoutWorld extends World {
 
 		if (ball.dead) {
 			remove(ball);
-			placeBall();
 			ballsLeft--;
 
-			if (ballsLeft == 0)
-				HXP.world = new BreakoutWorld(0);
+			if (ballsLeft == 0) {
+				var newworld = function () {
+					HXP.world = new BreakoutWorld(0);
+				};
+				var stayblank = function () {
+					HXP.tween(this, {fadeAlpha: 1}, 0.5,
+					         { complete: newworld });
+				};
+				HXP.tween(this, {fadeAlpha: 1}, 0.5,
+				          { complete: stayblank });
+			}
+			else
+				placeBall();
 		}
 
 		MyParticle.updateAll();
@@ -119,6 +131,9 @@ class BreakoutWorld extends World {
 				seed = Std.random(32);
 		}
 		addBricks(seed);
+
+		fadeAlpha = 1;
+		HXP.tween(this, {fadeAlpha: 0}, 0.5);
 	}
 
 	public function placeBall () : Void {
@@ -162,6 +177,9 @@ class BreakoutWorld extends World {
 		Draw.resetTarget();
 		Draw.rect(Std.int(ball.left), Std.int(ball.top),
 		          ball.width, ball.height, 0xFF0000);
+
+		Draw.rect(0, 0, HXP.width, HXP.height,
+		          Main.kClearColor, fadeAlpha);
 	}
 
 	// Each level is horizontally and vertically symmetric. Each row has
