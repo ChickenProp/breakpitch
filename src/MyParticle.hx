@@ -85,4 +85,13 @@ class MyParticle {
 		for (i in 0...particles.length)
 			particles[i].render();
 	}
+
+	public static function clear () : Void {
+		for (i in 0...particles.length) {
+			particles[i].recycleNext = recycleFirst;
+			recycleFirst = particles[i];
+		}
+
+		particles = [];
+	}
 }

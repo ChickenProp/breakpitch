@@ -121,6 +121,7 @@ class BreakoutWorld extends World {
 		paddle = G.paddle = new Paddle();
 		add(paddle);
 		placeBall();
+		MyParticle.clear();
 
 		var seed:Int = 0;
 		if (level < seeds.length)
