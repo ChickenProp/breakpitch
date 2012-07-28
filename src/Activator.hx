@@ -25,7 +25,6 @@ class Activator extends Entity {
 		var max = arrmax(pitches);
 		if (max - min <= 3 && min > 0) {
 			G.paddle.calibrate(Math.round(avg(pitches)));
-			G.paddle.active = true;
 			world.remove(this);
 		}
 	}

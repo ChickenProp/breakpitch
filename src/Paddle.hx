@@ -24,6 +24,7 @@ class Paddle extends Entity {
 	
 	public var controls:InputType;
 	public var recentering:Bool;
+	public var needsCalibration:Bool;
 
 	public function new () {
 		super();
@@ -40,6 +41,7 @@ class Paddle extends Entity {
 
 		controls = PITCH_CONTROLS_POSITION;
 		recentering = false;
+		needsCalibration = true;
 	}
 
 	override public function update () : Void {
@@ -96,8 +98,7 @@ class Paddle extends Entity {
 		    && Math.abs(y - HXP.height + 50) < 0.01)
 		{
 			recentering = false;
-			active = false;
-			world.add(new Activator());
+			waitForCalibration();
 		}
 	}
 
@@ -115,6 +116,11 @@ class Paddle extends Entity {
 	}
 
 	public function doMotionMic () : Void {
+		// In keyboard mode, we don't care if we're calibrated, so check
+		// here.
+		if (needsCalibration)
+			return;
+
 		pitch = Pitch.getPitch();
 
 		if (pitch <= maxIgnoredPitch) {
@@ -166,6 +172,11 @@ class Paddle extends Entity {
 			ball.launch();
 	}
 
+	public function waitForCalibration () : Void {
+		needsCalibration = true;
+		world.add(new Activator());
+	}
+
 	override public function render () : Void {
 		super.render();
 
@@ -179,6 +190,7 @@ class Paddle extends Entity {
 		medPitch = pitch;
 		minPitch = Std.int(pitch / Math.sqrt(2));
 		maxPitch = Std.int(pitch * Math.sqrt(2));
+		needsCalibration = false;
 	}
 
 	public function recenter () : Void {
