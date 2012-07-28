@@ -1,5 +1,6 @@
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Draw;
+import nme.geom.Point;
 using Lambda;
 
 class MyParticle {
@@ -18,24 +19,25 @@ class MyParticle {
 	public function new () {}
 
 	inline public function update () : Void {
-		oldx = x;
-		oldy = y;
-		x += vx;
-		y += vy;
-		vy += 0.2;
-
-		// Todo: replace with collision check that avoids tunelling.
-		if (G.paddle.collidePoint(G.paddle.x, G.paddle.y, x, y)) {
+		if (collides()) {
+			x = collision.x;
+			y = collision.y;
+			vy = - Math.abs(vy) * 0.5;
 			G.score += value;
 			value++;
-			vy = - Math.abs(vy) * 0.5;
-			y = G.paddle.top;
 			if (value > 5)
 				recycle();
 		}
+		else {
+			oldx = x;
+			oldy = y;
+			x += vx;
+			y += vy;
+			vy += 0.2;
 
-		if (oldy > HXP.height)
-			recycle();
+			if (oldy > HXP.height)
+				recycle();
+		}
 	}
 
 	inline public function render () : Void {
@@ -93,5 +95,45 @@ class MyParticle {
 		}
 
 		particles = [];
+	}
+
+	// We use the Liang-Barsky algorithm to check whether the particle
+	// collides with the paddle. If it does, the variable "collision" is set
+	// to the collision point. Call this before attempting to move the
+	// particle, so that (x, y) is its original positions and it is trying
+	// to move to (x+vy, y+vy). https://gist.github.com/3194723
+	static var collision = new Point(0, 0);
+	public function collides () : Bool {
+		var left = G.paddle.left;
+		var right = G.paddle.right;
+		var top = G.paddle.top;
+		var bottom = G.paddle.bottom;
+
+		var p = [-vx, vx, -vy, vy];
+		var q = [x - left, right - x, y - top, bottom - y];
+		var u1 = Math.NEGATIVE_INFINITY;
+		var u2 = Math.POSITIVE_INFINITY;
+
+		for (i in 0...4) {
+			if (p[i] == 0) {
+				if (q[i] < 0)
+					return false;
+			}
+			else {
+				var t = q[i] / p[i];
+				if (p[i] < 0 && u1 < t)
+					u1 = t;
+				else if (p[i] > 0 && u2 > t)
+					u2 = t;
+			}
+		}
+
+		if (u1 > u2 || u1 > 1 || u1 < 0)
+			return false;
+
+		collision.x = x + u1*vx;
+		collision.y = y + u1*vy;
+
+		return true;
 	}
 }
