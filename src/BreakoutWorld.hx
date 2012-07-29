@@ -216,7 +216,16 @@ class BreakoutWorld extends World {
 		var btop = top;
 		var bbot = btop + 7*20;
 
-		var color = Std.random(0x1000000);
+		// Pick a colour that has red + green + blue < 512, to make sure
+		// it shows up reasonably well.
+		var red, green, blue;
+		do {
+			red = Std.random(0xFF);
+			green = Std.random(0xFF);
+			blue = Std.random(0xFF);
+		} while (red + green + blue >= 512);
+		var color = red << 16 | green << 8 | blue;
+
 		addBrick(left + xoff, btop + yoff, color);
 		if (i != 5)
 			addBrick(right - xoff, btop + yoff, color);
