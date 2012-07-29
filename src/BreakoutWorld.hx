@@ -72,7 +72,7 @@ class BreakoutWorld extends World {
 		if (bricks.length == 0)
 			win();
 
-		if (ball.dead) {
+		if (ball.dead && ballsLeft > 0) {
 			remove(ball);
 			ballsLeft--;
 
@@ -88,8 +88,10 @@ class BreakoutWorld extends World {
 				HXP.tween(this, {fadeAlpha: 1}, 0.5,
 				          { complete: stayblank });
 			}
-			else
+			else {
+				Audio.play("die");
 				placeBall();
+			}
 		}
 
 		MyParticle.updateAll();
