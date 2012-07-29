@@ -12,6 +12,7 @@ class Ball extends Entity {
 	var launched:Bool;
 	public var dead:Bool;
 	public var combo:Int;
+	public var canHitPaddle:Bool;
 
 	public function new () {
 		super();
@@ -28,6 +29,7 @@ class Ball extends Entity {
 		vel = new Point(0, 0);
 		dead = false;
 		combo = 1;
+		canHitPaddle = true;
 	}
 
 	override public function update () : Void {
@@ -36,7 +38,16 @@ class Ball extends Entity {
 			return;
 		}
 
-		moveBy(vel.x, vel.y, "solid");
+		// When we hit the paddle, we switch a flag that says not to hit
+		// it again until we've started moving downwards. This stops us
+		// from hitting it twice in a row. We used to just move to above
+		// the paddle, but then if the paddle was still rising it would
+		// sometimes not work.
+		if (vel.y > 0)
+			canHitPaddle = true;
+
+		moveBy(vel.x, vel.y,
+		       canHitPaddle ? ["brick", "paddle"] : ["brick"]);
 
 		var bw = cast(world, BreakoutWorld);
 
@@ -94,15 +105,13 @@ class Ball extends Entity {
 	}
 
 	override public function moveCollideX (e) : Void {
-		if (Std.is(e, Brick))
-			hitBrick(e);
-		else
+		if (Std.is(e, Paddle)) {
+			hitPaddle(e);
 			bounceSound();
-		
-		if (Std.is(e, Paddle))
-			if (vel.y > 0) vel.y = -vel.y;
-
-		vel.x = -vel.x;
+		} else {
+			hitBrick(e);
+			vel.x = -vel.x;
+		}
 	}
 
 	override public function moveCollideY (e:Entity) : Void {
@@ -119,12 +128,10 @@ class Ball extends Entity {
 	// ball keeps getting faster which is really bad.
 	public function hitPaddle(e:Entity) : Void {
 		var p = cast(e, Paddle);
-		
-		y = p.y - p.halfHeight - halfHeight;
 
 		var maxVY = 20;
 		var minVY = 5;
-		
+
 		var offx = (x - p.x)/p.halfWidth;
 		var newvelx = vel.x + p.vel * 0.2 + offx * 5;
 		var newvely = Math.sqrt(Math.max(vel.x*vel.x + vel.y*vel.y - newvelx*newvelx, 0));
@@ -134,6 +141,7 @@ class Ball extends Entity {
 		vel.y = -newvely;
 
 		combo = 1;
+		canHitPaddle = false;
 	}
 
 	public function sign(x:Float) : Int {

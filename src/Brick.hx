@@ -13,7 +13,7 @@ class Brick extends Entity {
 		width = 50;
 		height = 20;
 		centerOrigin();
-		type = "solid";
+		type = "brick";
 
 		var image = new Image("gfx/brick.png");
 		this.color = color;

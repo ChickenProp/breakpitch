@@ -34,7 +34,7 @@ class Paddle extends Entity {
 		width = 150;
 		height = 10;
 		centerOrigin();
-		type = "solid";
+		type = "paddle";
 
 		vel = 0;
 		pitch = 0;
@@ -157,9 +157,9 @@ class Paddle extends Entity {
 
 			var target = (pitch * 0.5 + 0.5) * (right - left - width) + left + halfWidth;
 
-			vel = (target - x);
+			vel = (target - x)*0.5;
 
-			x += vel * 0.5;
+			x += (target - x);
 
 			y += (HXP.height - 50 - y) * 0.5;
 		} else {
