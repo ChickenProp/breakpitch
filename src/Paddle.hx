@@ -57,8 +57,6 @@ class Paddle extends Entity {
 
 		doMotion();
 
-		width = Std.int(150 + 0.5 * G.mic.activityLevel);
-
 		var left = 0.0;
 		var right = cast(HXP.width, Float);
 
