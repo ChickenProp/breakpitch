@@ -51,7 +51,12 @@ class Ball extends Entity {
 			bounceSound();
 		}
 
-		if (y + halfHeight > bw.bottom) {
+		// Only die if we go right off the bottom. This is more
+		// important than it should be, because after losing our last
+		// life, the ball gets removed but keeps being drawn (because
+		// that happens in BreakoutWorld). So we want to make sure it's
+		// off screen when that happens.
+		if (y - halfHeight > bw.bottom) {
 			dead = true;
 		}
 		else if (y - halfHeight < bw.top) {
