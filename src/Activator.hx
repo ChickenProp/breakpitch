@@ -1,6 +1,7 @@
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Text;
+import com.haxepunk.utils.Draw;
 
 class Activator extends Entity {
 	var pitches:Array<Int>;
@@ -21,30 +22,41 @@ class Activator extends Entity {
 		pitches.shift();
 		pitches.push(Pitch.getPitch());
 
-		var min = arrmin(pitches);
-		var max = arrmax(pitches);
-		if (max - min <= 3 && min > 0) {
+		if (samplesNeeded() == 0) {
 			G.paddle.calibrate(Math.round(avg(pitches)));
-			world.remove(this);
+
+			// Remove next frame, because it looks weird if the bar
+			// doesn't completely fill up.
+			var self = this;
+			HXP.tween(this, {}, 0.01, { complete: function () { world.remove(self); } });
 		}
 	}
 
-	function arrmin (a:Array<Int>) {
-		var m:Int = a[0];
-		for (i in 1...a.length)
-			if (a[i] < m)
-				m = a[i];
+	override public function render () : Void {
+		super.render();
 
-		return m;
+		var cx = Std.int(HXP.width/2);
+		Draw.rect(cx-32, 375, 64, 14, 0x000000);
+		Draw.rect(cx-30, 377, 60, 10, 0xFFFFFF);
+		Draw.rect(cx-30, 377, (15 - samplesNeeded())*4, 10, 0xFF0000);
 	}
 
-	function arrmax (a:Array<Int>) {
-		var m:Int = a[0];
-		for (i in 1...a.length)
-			if (a[i] > m)
-				m = a[i];
-
-		return m;
+	function samplesNeeded () : Int {
+		var min = Math.POSITIVE_INFINITY;
+		var max = Math.NEGATIVE_INFINITY;
+		for (ii in 0...15) {
+			var i = 14 - ii;
+			var p = pitches[i];
+			if (p == 0)
+				return i+1;
+			if (p < min)
+				min = p;
+			if (p > max)
+				max = p;
+			if (max - min > 3)
+				return i+1;
+		}
+		return 0;
 	}
 
 	function avg (a:Array<Int>) : Float {
