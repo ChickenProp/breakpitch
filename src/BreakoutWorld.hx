@@ -18,6 +18,7 @@ class BreakoutWorld extends World {
 
 	public var level:Int;
 	public var seeds:Array<Int>;
+	public var waitingToAddBricks:Bool;
 	public var paddle:Paddle;
 	public var ball:Ball;
 	public var ballsLeft:Int;
@@ -69,7 +70,7 @@ class BreakoutWorld extends World {
 
 		var bricks = [];
 		getClass(Brick, bricks);
-		if (bricks.length == 0)
+		if (bricks.length == 0 && !waitingToAddBricks)
 			win();
 
 		if (ball.dead && ballsLeft > 0) {
@@ -94,6 +95,11 @@ class BreakoutWorld extends World {
 			}
 		}
 
+		if (waitingToAddBricks) {
+			if (ball.y >= HXP.height/2 && ball.vel.y >= 0)
+				addBricks(getSeed());
+		}
+
 		MyParticle.updateAll();
 	}
 
@@ -101,7 +107,7 @@ class BreakoutWorld extends World {
 		Audio.play("win");
 		level++;
 		ballsLeft++;
-		addBricks(getSeed());
+		waitingToAddBricks = true;
 	}
 
 	public function getSeed () : Int {
@@ -198,6 +204,8 @@ class BreakoutWorld extends World {
 					addBrickSymmetric(i, j);
 			}
 		}
+
+		waitingToAddBricks = false;
 	}
 
 	public function addBrickSymmetric(i:Int, j:Int) : Void {
