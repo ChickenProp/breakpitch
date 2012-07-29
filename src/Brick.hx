@@ -24,6 +24,12 @@ class Brick extends Entity {
 	}
 
 	public function hit () : Void {
+		// Don't let us get hit twice. This fixes a bug in debug mode
+		// where if you hit F6 ("win") while a brick was shrinking, it
+		// would throw an error soon afterwards.
+		if (type == "dying")
+			return;
+
 		type = "dying";
 		var self = this;
 		HXP.tween(graphic, {scale: 0}, 0.2,
