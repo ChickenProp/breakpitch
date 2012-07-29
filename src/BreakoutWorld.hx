@@ -77,6 +77,7 @@ class BreakoutWorld extends World {
 			ballsLeft--;
 
 			if (ballsLeft == 0) {
+				Audio.play("lose");
 				var newworld = function () {
 					HXP.world = new BreakoutWorld(0);
 				};
