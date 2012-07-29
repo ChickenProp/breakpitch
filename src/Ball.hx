@@ -79,8 +79,8 @@ class Ball extends Entity {
 
 	public function launch () : Void {
 		if (!launched) {
-			vel.y = 8;
-			vel.x = cast(world, BreakoutWorld).paddle.vel;
+			vel.y = -5;
+			vel.x = (Math.random()*2 + 6) * (Math.random() > 0.5 ? 1 : -1);
 		}
 		launched = true;
 	}
