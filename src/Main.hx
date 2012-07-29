@@ -34,6 +34,7 @@ class Main extends Engine
 		HXP.screen.color = kClearColor;
 		HXP.screen.scale = 1;
 
+		HXP.defaultFont = "font/orbitron-medium.ttf";
 
 		G.init();
 		Pitch.init();

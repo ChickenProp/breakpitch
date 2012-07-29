@@ -16,7 +16,7 @@ class TextParticle extends Entity {
 		centerOrigin();
 		this.vel = new Point(vx, vy);
 
-		var image = new Text(text);
+		var image = new Text(text, 0, 0, 0, 0, { size: 14 });
 		image.centerOO();
 		image.color = 0x000000;
 		graphic = image;

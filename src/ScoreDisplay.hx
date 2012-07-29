@@ -1,5 +1,6 @@
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Text;
+import com.haxepunk.HXP;
 
 class ScoreDisplay extends Entity {
 	var score:Text;
@@ -8,8 +9,8 @@ class ScoreDisplay extends Entity {
 	var dispHiscore:Int;
 	public function new () {
 		super();
-		score = new Text("                  ", 350, 10);
-		hiscore = new Text("                   ", 470, 10);
+		score = new Text("", 300, 7, HXP.width, 30);
+		hiscore = new Text("", 470, 7, HXP.width, 30);
 		addGraphic(score);
 		addGraphic(hiscore);
 		dispScore = 0;
