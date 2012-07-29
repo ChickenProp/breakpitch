@@ -81,6 +81,9 @@ class Paddle extends Entity {
 	public function doMotion () : Void {
 		if (recentering)
 			doRecentering();
+		else if (Std.is(world, BreakoutWorld)
+		    && cast(world, BreakoutWorld).ballsLeft == 0)
+			doMotionLost();
 		else if (controls == KEYBOARD)
 			doMotionKeyboard();
 		else
@@ -100,6 +103,12 @@ class Paddle extends Entity {
 			recentering = false;
 			waitForCalibration();
 		}
+	}
+
+	public function doMotionLost () : Void {
+		x += vel;
+		vel *= 0.8;
+		drop();
 	}
 
 	public function doMotionKeyboard () : Void {
@@ -125,7 +134,7 @@ class Paddle extends Entity {
 
 		if (pitch <= maxIgnoredPitch) {
 			if (controls == PITCH_CONTROLS_POSITION)
-				y += (HXP.height + 50 - y) * 0.2;
+				drop();
 			return;
 		}
 
@@ -170,6 +179,10 @@ class Paddle extends Entity {
 		var ball = cast(world.typeFirst("ball"), Ball);
 		if (ball != null)
 			ball.launch();
+	}
+
+	public function drop () : Void {
+		y += (HXP.height + 50 - y) * 0.2;
 	}
 
 	public function waitForCalibration () : Void {
