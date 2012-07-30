@@ -19,7 +19,7 @@ class ScoreDisplay extends Entity {
 
 	override public function update () : Void {
 		if (dispScore < G.score)
-			dispScore++;
+			dispScore += Math.ceil((G.score - dispScore) / 10);
 		if (dispHiscore < dispScore)
 			dispHiscore = dispScore;
 
