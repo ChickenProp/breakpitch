@@ -7,15 +7,19 @@ class Audio
 	
 	public static var music:Sfx;
 	public static var musicVolume:Float;
+	public static var rain:Sfx;
+	public static var rainVolume:Float;
 	
 	public static function init ():Void
 	{
 		music = new Sfx("music/music.mp3");
-		
 		music.loop();
-		
 		musicVolume = 1.0;
-		
+
+		rain = new Sfx("music/rain.mp3");
+		rain.loop();
+		rainVolume = 0;
+
 		//FP.stage.addEventListener(Event.ACTIVATE, focusGain);
 		//FP.stage.addEventListener(Event.DEACTIVATE, focusLost);
 	}
@@ -23,6 +27,10 @@ class Audio
 	public static function update ():Void
 	{
 		music.volume = musicVolume;
+
+		rainVolume = HXP.clamp(rainVolume, 0, 1);
+		rain.volume = rainVolume;
+		rainVolume *= 0.95;
 	}
 	
 	public static function play (sound:String):Void

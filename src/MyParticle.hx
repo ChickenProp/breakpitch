@@ -23,6 +23,7 @@ class MyParticle {
 			x = collision.x;
 			y = collision.y;
 			vy = - Math.abs(vy) * 0.5;
+			Audio.rainVolume += 0.1;
 			G.score += value;
 			value++;
 			if (value > 5)
