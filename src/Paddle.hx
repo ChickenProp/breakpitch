@@ -82,7 +82,7 @@ class Paddle extends Entity {
 		if (recentering)
 			doRecentering();
 		else if (Std.is(world, BreakoutWorld)
-		    && cast(world, BreakoutWorld).ballsLeft == 0)
+		    && cast(world, BreakoutWorld).ballsLeft.length == 0)
 			doMotionLost();
 		else if (controls == KEYBOARD)
 			doMotionKeyboard();

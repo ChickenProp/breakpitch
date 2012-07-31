@@ -21,7 +21,7 @@ class BreakoutWorld extends World {
 	public var waitingToAddBricks:Bool;
 	public var paddle:Paddle;
 	public var ball:Ball;
-	public var ballsLeft:Int;
+	public var ballsLeft:Array<ExtraLife>;
 
 	public var fadeAlpha:Float;
 
@@ -30,7 +30,10 @@ class BreakoutWorld extends World {
 		this.level = level;
 		width = 550;
 		height = 450;
-		ballsLeft = 3;
+
+		ballsLeft = [];
+		for (i in 0...3)
+			gainLife();
 
 		seeds = [8, 10, 4, 5, 6, 7, 9, 26, 11, 14];
 
@@ -73,11 +76,10 @@ class BreakoutWorld extends World {
 		if (bricks.length == 0 && !waitingToAddBricks)
 			win();
 
-		if (ball.dead && ballsLeft > 0) {
-			remove(ball);
-			ballsLeft--;
+		if (ball.dead && ballsLeft.length > 0) {
+			loseLife();
 
-			if (ballsLeft == 0) {
+			if (ballsLeft.length == 0) {
 				Audio.play("lose");
 				var newworld = function () {
 					HXP.world = new BreakoutWorld(0);
@@ -106,7 +108,7 @@ class BreakoutWorld extends World {
 	public function win () : Void {
 		Audio.play("win");
 		level++;
-		ballsLeft++;
+		gainLife();
 		waitingToAddBricks = true;
 	}
 
@@ -160,10 +162,6 @@ class BreakoutWorld extends World {
 		          HXP.height - height,
 		          width, height,
 		          0xCCCCFF);
-
-		for (i in 0 ... ballsLeft-1) {
-			Draw.rect(10 + 20*i, 10, 10, 10, 0xFF0000);
-		}
 
 		super.render();
 
@@ -238,18 +236,18 @@ class BreakoutWorld extends World {
 	public function addBrick(x:Float, y:Float, color:Int) : Void {
 		var dropheight = top + 7*20;
 		var b = new Brick(x, y-dropheight, color);
-		HXP.tween(b, {y: y}, 0.4 + Math.random()/5, {ease: bounceEase});
+		HXP.tween(b, {y: y}, 0.4+Math.random()/5, {ease: G.bounceEase});
 		add(b);
 	}
 
-	public function bounceEase (t:Float) : Float {
-		var peak = 0.7;
-		if (t < peak)
-			return 1.2 * Math.sin(Math.PI*t / 1.6);
-		else {
-			var phase = (t - peak) / (1 - peak); // [0, 1]
-			return 1.2 - 0.1 * (1 - Math.cos(Math.PI * phase));
-		}
+	public function gainLife () : Void {
+		var el = new ExtraLife();
+		add(el);
+		ballsLeft.push(el);
+	}
+
+	public function loseLife () : Void {
+		ballsLeft.pop().die();
 	}
 
 	function getLeft () : Float { return (HXP.width - width) / 2; }
