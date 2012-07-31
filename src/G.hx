@@ -47,8 +47,10 @@ class G {
 	static function getScore () { return _score; }
 	static function setScore (s) {
 		var newballs = extraLives(s) - extraLives(_score);
-		for (i in 0...newballs)
+		for (i in 0...newballs) {
 			cast(HXP.world, BreakoutWorld).gainLife();
+			Audio.play("newlife");
+		}
 
 		_score = s;
 		if (s > _hiscore) {
