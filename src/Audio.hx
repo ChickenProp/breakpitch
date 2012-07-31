@@ -18,7 +18,7 @@ class Audio
 
 		rain = new Sfx("music/rain.mp3");
 		rain.loop();
-		rainVolume = 0;
+		rain.volume = rainVolume = 0;
 
 		//FP.stage.addEventListener(Event.ACTIVATE, focusGain);
 		//FP.stage.addEventListener(Event.DEACTIVATE, focusLost);
