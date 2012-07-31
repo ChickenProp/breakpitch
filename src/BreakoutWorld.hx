@@ -21,7 +21,8 @@ class BreakoutWorld extends World {
 	public var waitingToAddBricks:Bool;
 	public var paddle:Paddle;
 	public var ball:Ball;
-	public var ballsLeft:Array<ExtraLife>;
+	public var ballsLeft:Int;
+	public var ballsArr:Array<ExtraLife>;
 
 	public var fadeAlpha:Float;
 
@@ -31,7 +32,8 @@ class BreakoutWorld extends World {
 		width = 550;
 		height = 450;
 
-		ballsLeft = [];
+		ballsLeft = 1;
+		ballsArr = [];
 		for (i in 0...3)
 			gainLife();
 
@@ -76,10 +78,10 @@ class BreakoutWorld extends World {
 		if (bricks.length == 0 && !waitingToAddBricks)
 			win();
 
-		if (ball.dead && ballsLeft.length > 0) {
+		if (ball.dead && ballsLeft > 0) {
 			loseLife();
 
-			if (ballsLeft.length == 0) {
+			if (ballsLeft == 0) {
 				Audio.play("lose");
 				var newworld = function () {
 					HXP.world = new BreakoutWorld(0);
@@ -241,13 +243,16 @@ class BreakoutWorld extends World {
 	}
 
 	public function gainLife () : Void {
+		ballsLeft++;
 		var el = new ExtraLife();
 		add(el);
-		ballsLeft.push(el);
+		ballsArr.push(el);
 	}
 
 	public function loseLife () : Void {
-		ballsLeft.pop().die();
+		ballsLeft--;
+		if (ballsLeft > 0)
+			ballsArr.pop().die();
 	}
 
 	function getLeft () : Float { return (HXP.width - width) / 2; }
