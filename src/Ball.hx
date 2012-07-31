@@ -69,6 +69,7 @@ class Ball extends Entity {
 		// off screen when that happens.
 		if (y - halfHeight > bw.bottom) {
 			dead = true;
+			world.remove(this);
 		}
 		else if (y - halfHeight < bw.top) {
 			y = bw.top + halfHeight;
