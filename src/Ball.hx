@@ -92,7 +92,7 @@ class Ball extends Entity {
 		if (!launched) {
 			vel.y = -5;
 			vel.x = (Math.random()*2 + 6) * (Math.random() > 0.5 ? 1 : -1);
-			Audio.play("newlife");
+			Audio.play("brick");
 		}
 		launched = true;
 	}
