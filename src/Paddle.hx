@@ -25,6 +25,7 @@ class Paddle extends Entity {
 	public var controls:InputType;
 	public var recentering:Bool;
 	public var needsCalibration:Bool;
+	public var lineWidth:Float;
 
 	public function new () {
 		super();
@@ -42,6 +43,7 @@ class Paddle extends Entity {
 		controls = PITCH_CONTROLS_POSITION;
 		recentering = false;
 		needsCalibration = true;
+		lineWidth = 2;
 	}
 
 	override public function update () : Void {
@@ -193,8 +195,11 @@ class Paddle extends Entity {
 
 		Draw.rect(Std.int(x - halfWidth), Std.int(y - halfHeight),
 		          width, height, 0x0000CC);
-		
-		Draw.rect(Std.int(x + pitch * (halfWidth-1) - 1), Std.int(y - halfHeight + 2), 2, height-4, 0xFFFFFF);
+
+		var lineleft = Std.int(x + pitch * (halfWidth-1) - lineWidth/2);
+		Draw.rect(lineleft, Std.int(y - halfHeight + 2),
+		          Std.int(Math.min(lineWidth, right-lineleft-2)),
+		          height-4, 0xFFFFFF);
 	}
 
 	public function calibrate (pitch:Int) {
