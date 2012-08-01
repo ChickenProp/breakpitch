@@ -10,7 +10,7 @@ class Activator extends Entity {
 		super();
 
 		graphic = new Text("Sing a medium-pitched note to launch.",
-		                   HXP.width/2, 350, 0, 0,
+		                   HXP.width/2, 380, 0, 0,
 		                   { color: 0x000000 });
 		cast(graphic, Text).centerOO();
 

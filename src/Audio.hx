@@ -13,8 +13,8 @@ class Audio
 	public static function init ():Void
 	{
 		music = new Sfx("music/music.mp3");
-		music.loop();
-		musicVolume = 1.0;
+		//music.loop();
+		musicVolume = 0.0;
 
 		rain = new Sfx("music/rain.mp3");
 		rain.loop();

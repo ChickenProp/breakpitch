@@ -84,7 +84,7 @@ class BreakoutWorld extends World {
 			if (ballsLeft == 0) {
 				Audio.play("lose");
 				var newworld = function () {
-					HXP.world = new BreakoutWorld(0);
+					HXP.world = new TitleScreen();
 				};
 				var stayblank = function () {
 					HXP.tween(this, {fadeAlpha: 1}, 0.5,
@@ -134,6 +134,8 @@ class BreakoutWorld extends World {
 		paddle = G.paddle = new Paddle();
 		add(paddle);
 		placeBall();
+		paddle.recentering = false;
+		paddle.needsCalibration = false;
 		MyParticle.clear();
 
 		var seed:Int = 0;

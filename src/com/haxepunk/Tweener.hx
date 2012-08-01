@@ -34,7 +34,7 @@ class Tweener
 	public function removeTween(t:Tween):Tween
 	{
 		var ft:FriendTween = t;
-		if (ft._parent != this) throw "Core object does not contain Tween.";
+		if (ft._parent != this) return null;//throw "Core object does not contain Tween.";
 		if (ft._next != null) ft._next._prev = ft._prev;
 		if (ft._prev != null)
 		{
