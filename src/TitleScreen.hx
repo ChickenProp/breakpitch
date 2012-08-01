@@ -37,20 +37,19 @@ class TitleScreen extends World {
 		sprite = new Sprite();
 		
 		var css1:String = 'a:hover { text-decoration: underline; } 
-					a { text-decoration: none; color: #FFFF00; }';
+					a { text-decoration: none; color: #000000; }';
 		
 		var credits1:TextField = makeHTMLText(
-			//'Created by <a href="http://www.draknek.org/" target="_blank">Alan</a> and <a href="http://philh.net/" target="_blank">Phil</a> Hazelden',
-			'Created by Alan and Phil Hazelden',
+			'Created by <a href="http://www.draknek.org/" target="_blank">Alan</a> and <a href="http://philh.net/" target="_blank">Phil</a> Hazelden',
 			16, 0x404040, css1
 		);
 		var credits2:TextField = makeHTMLText(
-			'Music: Synthesis by Celestial Aeon Project',
+			'Music: <a href="http://www.jamendo.com/en/track/727910/synthesis" target="_blank">Synthesis</a> by <a href="http://www.jamendo.com/en/artist/2740/celestial-aeon-project" target="_blank">Celestial Aeon Project</a>',
 			16, 0x404040, css1
 		);
 		
 		var credits3:TextField = makeHTMLText(
-			'Logo: Scott Roberts',
+			'Logo: <a href="http://braveworksdevblog.tumblr.com/" target="_blank">Scott Roberts</a>',
 			16, 0x404040, css1
 		);
 		
@@ -125,8 +124,8 @@ class TitleScreen extends World {
 	
 	public static function makeHTMLText (html:String, size:Float, color:UInt, css:String): TextField
 	{
-		//var ss:StyleSheet = new StyleSheet();
-		//ss.parseCSS(css);
+		var ss:StyleSheet = new StyleSheet();
+		ss.parseCSS(css);
 		
 		var textField:TextField = new TextField();
 		
@@ -143,10 +142,9 @@ class TitleScreen extends World {
 		
 		textField.defaultTextFormat = new TextFormat(fontObj.fontName, size);
 		
-		//textField.htmlText = html;
-		textField.text = html;
+		textField.htmlText = html;
 		
-		//textField.styleSheet = ss;
+		textField.styleSheet = ss;
 		
 		textField.x = (HXP.width - textField.width) * 0.5;
 		
