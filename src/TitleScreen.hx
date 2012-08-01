@@ -4,6 +4,7 @@ import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.Text;
 import com.haxepunk.Tween;
 import nme.display.BitmapData;
 import nme.geom.ColorTransform;
@@ -60,6 +61,28 @@ class TitleScreen extends World {
 		sprite.addChild(credits1);
 		sprite.addChild(credits2);
 		sprite.addChild(credits3);
+		
+		var score = G.score;
+		
+		if (score > 0) {
+			var scoreText = new Text(Std.format("Score: $score"), HXP.width*0.5, 300);
+			scoreText.resizable = true;
+			scoreText.color = 0x0;
+			scoreText.size = 24;
+			
+			scoreText.centerOO();
+			
+			addGraphic(scoreText);
+			
+			scoreText = new Text(Std.format("High score: ${G.hiscore}"), HXP.width*0.5, 330);
+			scoreText.resizable = true;
+			scoreText.color = 0x0;
+			scoreText.size = 24;
+			
+			scoreText.centerOO();
+			
+			addGraphic(scoreText);
+		}
 	}
 
 	override public function update () : Void {
