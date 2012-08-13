@@ -49,7 +49,7 @@ class TitleScreen extends World {
 		);
 		
 		var credits3:TextField = makeHTMLText(
-			'Logo: <a href="http://braveworksdevblog.tumblr.com/" target="_blank">Scott Roberts</a>',
+			'Logo: <a href="https://twitter.com/BraveWorksScott" target="_blank">Scott Roberts</a>',
 			16, 0x404040, css1
 		);
 		
